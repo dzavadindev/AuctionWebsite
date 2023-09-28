@@ -1,0 +1,11 @@
+### Delete a specific product
+DELETE {{protocol}}{{host}}:{{port}}}//products/{{productId}}
+Accept: application/json
+
+###
+
+### Delete a specific user
+DELETE {{protocol}}{{host}}:{{port}}}//users/{{userId}}
+Accept: application/json
+
+###

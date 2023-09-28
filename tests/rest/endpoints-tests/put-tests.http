@@ -1,0 +1,25 @@
+### Update a specific product
+PUT {{protocol}}{{host}}:{{port}}}//products/{{productId}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Updated Art Piece Name",
+    "author": "Updated Author"
+  }
+}
+
+###
+
+### Update a specific user
+PUT {{protocol}}{{host}}:{{port}}}//users/{{userId}}
+Content-Type: application/json
+
+{
+  "data": {
+    "username": "johnDUpdated",
+    "password": "newSecurePass"
+  }
+}
+
+###
