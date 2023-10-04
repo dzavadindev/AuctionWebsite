@@ -2,27 +2,6 @@
     import Item from "../components/Item.svelte";
 
     let items = [{
-        image: "/item-images/starry-night.jpg",
-        name: "Starry Night",
-        author: "Van Gogh",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "400",
-        id: "1"
-    }, {
-        image: "/item-images/liberty-leading-the-people.jpg",
-        name: "Liberty Leading the People",
-        author: "Delacroix",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "500",
-        id: "2"
-    }, {
-        image: "/item-images/the-great-wave-of-kanagawa.jpg",
-        name: "The Great Wave of Kanagawa",
-        author: "Hokusai",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "300",
-        id: "3"
-    }, {
         image: "/item-images/the-great-wave-of-kanagawa.jpg",
         name: "The Great Wave of Kanagawa",
         author: "Hokusai",
@@ -61,7 +40,7 @@
     </div>
     <div class="items-container">
         {#each items as item}
-            <Item className="item" {...item}/>
+            <Item {...item}/>
         {/each}
     </div>
 </section>

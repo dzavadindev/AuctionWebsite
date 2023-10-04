@@ -1,19 +1,26 @@
 <script>
-    export let wrapperClassname, inputClassname, inputType, inputName;
+    export let labelText, inputType, inputName;
 </script>
 
-<div class={wrapperClassname + " input-wrapper"}>
+<div class="form-field-container">
     <label for={inputName}>
-        <input id={inputName} type={inputType} class={inputClassname + " input"}>
+        <span class="field-label">{labelText}</span>
+        <input type={inputType} class="form-field" name={inputName}>
     </label>
 </div>
 
 <style>
-    .input-wrapper {
-        margin-bottom: 1vh;
+
+    .field-label {
+        font-size: 21px;
     }
 
-    .input {
+    .form-field-container {
+        margin-bottom: 5%;
+    }
+
+    .form-field {
         width: 100%;
     }
+
 </style>

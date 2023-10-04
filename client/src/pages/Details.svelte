@@ -35,11 +35,13 @@
 <section class="item-details">
     <section class="image-and-bidding-container">
         <div class="image-wrapper">
-            <img class="image" src={item.image} alt="item-image">
+            <img class="item-image" src={item.image} alt={"item " + item.name}>
         </div>
-        <Button text="+10€" onClick={bidTen}/>
-        <Button text="+100€" onClick={bidHundred}/>
-        <Button text="+N€" onClick={bidCustom}/>
+        <div class="buttons-container">
+            <Button className="bid-button" text="+10€" onClick={bidTen}/>
+            <Button className="bid-button" text="+100€" onClick={bidHundred}/>
+            <Button className="bid-button" text="+N€" onClick={bidCustom}/>
+        </div>
     </section>
     <section class="description-container">
         <div class="description">
@@ -57,8 +59,8 @@
     .item-details {
         display: grid;
         width: 100%;
-        height: 1rem;
-        grid-template-columns: 1fr 1fr 1fr;
+        height: 80vh;
+        grid-template-columns: 40% 35% 25%;
     }
 
     .image-and-bidding-container {
@@ -66,13 +68,19 @@
         flex-direction: column;
     }
 
-    .image-wrapper {
-        display: flex;
-        width: 60rem;
+    .buttons-container {
+        justify-content: space-evenly;
     }
 
-    .image {
+    .image-wrapper {
         display: flex;
+    }
+
+    .item-image {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
     }
 
     .description {

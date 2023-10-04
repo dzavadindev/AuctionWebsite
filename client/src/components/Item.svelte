@@ -1,8 +1,8 @@
 <script>
-    export let className, image, name, price, id, author;
+    export let image, name, price, id, author;
 </script>
 
-<div id={id} class={className + " item"}>
+<div id={id} class="item">
     <div class="image-wrapper">
         <img class="image" src={image} alt={"item" + id}>
     </div>

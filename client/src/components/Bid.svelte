@@ -1,10 +1,8 @@
 <script>
-
-    export let className, username, bid;
-
+    export let username, bid;
 </script>
 
-<div class={className + " bid-container"}>
+<div class="bid-container">
     <p class="username">{username}</p>
     <p class="bid-amount">{bid}</p>
 </div>

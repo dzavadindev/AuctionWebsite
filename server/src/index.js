@@ -1,27 +1,20 @@
 import express from 'express';
 
-import cors from 'cors'
-import auth from './middleware/auth.js';
+import token from './routers/token-router.js';
 
-import bidsRouter from "./routers/bids-router.js";
 import productsRouter from "./routers/products-router.js";
 import usersRouter from "./routers/users-router.js";
 
-// import * as db from "./database/db-helper.js"
-// db.createTable()
-
 const app = express();
+app.use(express.json());
 
 const port = 3000;
-app.use(cors());
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true}))
-app.use("/auth", auth);
-
+// Checking the access of the client - authorization
+// Checking if the client is logged it - authentications
+app.use("/token", token);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
-app.use('/bids', bidsRouter);
 app.use((req, res) => res.status(404).send('Sorry, that resource does not exist!'))
 
 app.listen(port, () => {

@@ -1,11 +1,26 @@
 <script>
-    export let className, text, onClick;
+    export let className;
+    export let text;
+    export let onClick = () => {};
+    export let type = "button";
 
 </script>
 
-<button class={className + " button"} on:click={onClick}>{text}</button>
+<button type={type} class={className + " button"} on:click={onClick}>{text}</button>
 
 <style>
+    button.bid-button {
+        background-color: pink;
+    }
+
+    button.login-button {
+
+    }
+
+    button.register-button {
+
+    }
+
     .button {
         width: 90px;
         height: 30px;
