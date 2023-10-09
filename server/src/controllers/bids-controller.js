@@ -1,6 +1,10 @@
 import fs from "fs";
 import {productsJsonPath} from "../constants.js";
 
+const verifyBidPayload = (payload) => {
+    return payload.username && payload.bid;
+}
+
 export const getBids = (req, res) => {
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message});
@@ -22,7 +26,7 @@ export const getBid = (req, res) => {
     })
 }
 export const addBid = (req, res) => {
-    // apply some other shit
+    if (!verifyBidPayload(req.body)) return res.status(422).send({"error": "invalid bid data provided"})
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message})
         let data = JSON.parse(json)

@@ -13,6 +13,8 @@
 <style>
     .item {
         display: flex;
+        object-fit: contain;
+        max-height: 25rem;
         width: 22vw;
         margin: 1vh 0;
         padding: 1vw;

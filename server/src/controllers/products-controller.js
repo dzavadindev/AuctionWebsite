@@ -1,7 +1,7 @@
 import fs from "fs";
 import {productsJsonPath} from "../constants.js";
 
-const verifyBodyFormat = (body) => {
+const verifyProductPayload = (body) => {
     let validName = typeof body.name === "string"
     let validAuthor = typeof body.author === "string"
     let validDescription = typeof body.description === "string"

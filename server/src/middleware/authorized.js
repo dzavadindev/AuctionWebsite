@@ -1,9 +1,6 @@
-import express from 'express';
+export const loggedIn = (next, req, res) => {
 
-const router = express.Router();
+}
+export const isAdmin = (next, req, res) => {
 
-router.post("/", (req, res) => {
-
-});
-
-export default router;
+}
