@@ -1,10 +1,6 @@
 import fs from "fs";
 import bcrypt from "bcrypt"
-import {usersJsonPath, salt} from "../constants.js";
-
-const verifyUserPayload = (payload) => {
-    return payload.username && payload.email && payload.password
-}
+import {usersJsonPath, saltRounds} from "../constants.js";
 
 export const getUsers = (req, res) => {
     fs.readFile(usersJsonPath, "utf8", (err, json) => {
@@ -37,7 +33,8 @@ export const deleteUser = (req, res) => {
     })
 }
 export const updateUser = (req, res) => {
-    if (!verifyUserPayload(req.body)) return res.status(422).send({"error": "invalid user data provided"})
+    const {username, email} = req.body;
+    if (!username && !email) return res.status(422).send({"error": "invalid user data provided"})
     fs.readFile(usersJsonPath, "utf8", (err, json) => {
         if (err) res.status(500).send({"error": err.message});
         let data = JSON.parse(json);
@@ -54,18 +51,27 @@ export const updateUser = (req, res) => {
 }
 export const addUser = (req, res) => {
 
+    const {username, email, password} = req.body
     const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
+    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
 
-    if (!verifyUserPayload(req.body)) return res.status(422).send({"error": "invalid user data provided"})
-    fs.readFile(usersJsonPath, "utf8", (err, json) => {
-        if (err) res.status(500).send({"error": err.message})
-        let data = JSON.parse(json)
-        req.body.password = bcrypt.hash(req.body.password, salt)
-        data.push(req.body);
-        fs.writeFile(usersJsonPath, JSON.stringify(data), () => {
-            if (err) console.log('Error writing file:', err);
-            else console.log('Successfully updated file');
+    fs.readFile(usersJsonPath, "utf8", (readErr, json) => {
+        if (readErr) res.status(500).send({"error": readErr.message})
+        let data = json ? JSON.parse(json) : [];
+
+        const userExists = data.find(el => el.username === username && el.email === email);
+        if (userExists)
+            return res.status(409).send({"error": "Conflict. User already exists"})
+
+        bcrypt.hash(password, saltRounds, (hashErr, hash) => {
+            if (hashErr)
+                return res.status(500).send({"error": "Password hashing failed, try the request again - " + hashErr})
+
+            data.push({"username": username, "email": email, "password": hash, admin: false});
+            fs.writeFile(usersJsonPath, JSON.stringify(data), writeErr => {
+                if (writeErr) return res.status(500).send({"error": "Error when writing into a file: ", writeErr})
+                res.status(201).send(data);
+            })
         })
-        res.status(201).send(data)
     })
 }

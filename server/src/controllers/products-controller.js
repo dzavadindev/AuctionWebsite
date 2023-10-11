@@ -1,15 +1,6 @@
 import fs from "fs";
 import {productsJsonPath} from "../constants.js";
 
-const verifyProductPayload = (body) => {
-    let validName = typeof body.name === "string"
-    let validAuthor = typeof body.author === "string"
-    let validDescription = typeof body.description === "string"
-    let validPrice = typeof body.price === "number"
-    return validName && validAuthor && validDescription && validPrice;
-}
-
-
 export const getProducts = (req, res) => {
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message});
