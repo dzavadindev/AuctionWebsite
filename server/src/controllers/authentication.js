@@ -1,10 +1,7 @@
-import express from 'express';
 import fs from "fs";
 import {secret, usersJsonPath} from "../constants.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
-const router = express.Router();
 
 export const handleLogin = (req, res) => {
     const {username, password} = req.body;
@@ -28,5 +25,3 @@ export const handleLogin = (req, res) => {
     })
 
 }
-
-export default router;

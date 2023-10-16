@@ -1,0 +1,14 @@
+[
+  {
+    "username": "mane",
+    "email": "goodguy@gmail.com",
+    "password": "$2b$15$nkU3qijbYswWBHnKoOLxUefFxsFoCdZwD/FEVooSNGbVh9JNDRm7m",
+    "admin": true
+  },
+  {
+    "username": "callushUZZZ",
+    "email": "folk1ey@gmail.com",
+    "password": "$2b$15$c3365NdBflM.0upvNW37lu5E5LsP0kR2XvWYnMkfsyikwp0A5WFz6",
+    "admin": false
+  }
+]

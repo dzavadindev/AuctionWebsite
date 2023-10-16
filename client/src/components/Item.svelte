@@ -1,8 +1,20 @@
 <script>
+    import page from "page";
+
     export let image, name, price, id, author;
+
+    const navigateToDetails = () => {
+        page(`/details/${id}`);
+    }
 </script>
 
-<div id={id} class="item">
+<div id={id}
+     on:click={navigateToDetails}
+     on:keydown={navigateToDetails}
+     role="button"
+     tabindex="0"
+     class="item">
+
     <div class="image-wrapper">
         <img class="image" src={image} alt={"item" + id}>
     </div>
