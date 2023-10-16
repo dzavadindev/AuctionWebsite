@@ -1,28 +1,23 @@
 <script>
     import Bid from "../components/Bid.svelte";
     import Button from "../components/Button.svelte";
+    import {onMount} from 'svelte';
 
-    let item = {
-        image: "/item-images/starry-night.jpg",
-        name: "Starry Night",
-        author: "Van Gogh",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "400",
-        id: "1"
-    }
-    let bids = [
-        {
-            user: "bob",
-            amount: 123
-        }, {
-            user: "jill",
-            amount: 321
-        }, {
-            user: "carl",
-            amount: 400
-        }
-    ]
+    export let params;
+    let item = {};
+    let itemFound;
 
+    onMount(async () => {
+        const response = await fetch(`http://localhost:3000/products/${params.id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        item = await response.json();
+        itemFound = response.ok;
+        console.log(item);
+    });
     const bidTen = () => {
     }
     const bidHundred = () => {
@@ -32,28 +27,34 @@
 
 </script>
 
-<section class="item-details">
-    <section class="image-and-bidding-container">
-        <div class="image-wrapper">
-            <img class="item-image" src={item.image} alt={"item " + item.name}>
-        </div>
-        <div class="buttons-container">
-            <Button className="bid-button" text="+10€" onClick={bidTen}/>
-            <Button className="bid-button" text="+100€" onClick={bidHundred}/>
-            <Button className="bid-button" text="+N€" onClick={bidCustom}/>
+{#if itemFound}
+    <section class="item-details">
+        <section class="image-and-bidding-container">
+            <div class="image-wrapper">
+                <img class="item-image" src={item.image} alt={"item " + item.name}>
+            </div>
+            <div class="buttons-container">
+                <Button className="bid-button" text="+10€" onClick={bidTen}/>
+                <Button className="bid-button" text="+100€" onClick={bidHundred}/>
+                <Button className="bid-button" text="+N€" onClick={bidCustom}/>
+            </div>
+        </section>
+        <section class="description-container">
+            <div class="description">
+                {item.description}
+            </div>
+        </section>
+        <div class="bids-container">
+            {#if item.bids}
+                {#each item.bids as bid}
+                    <Bid username={bid.username} bid={bid.bid}/>
+                {/each}
+            {/if}
         </div>
     </section>
-    <section class="description-container">
-        <div class="description">
-            {item.description}
-        </div>
-    </section>
-    <div class="bids-container">
-        {#each bids as bid}
-            <Bid username={bid.user} bid={bid.amount}/>
-        {/each}
-    </div>
-</section>
+{:else}
+    <section>404 Not Found</section>
+{/if}
 
 <style>
     .item-details {

@@ -22,9 +22,10 @@
         page = Login;
         currentRoute = ctx.pathname;
     });
-    router('/details', (ctx) => {
+    router('/details/:id', (ctx) => {
         page = Details;
         currentRoute = ctx.pathname;
+        params = ctx.params;
     });
     router('/register', (ctx) => {
         page = Register;

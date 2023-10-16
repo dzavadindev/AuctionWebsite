@@ -1,28 +1,20 @@
 <script>
     import Item from "../components/Item.svelte";
+    import {onMount} from 'svelte';
 
-    let items = [{
-        image: "/item-images/the-great-wave-of-kanagawa.jpg",
-        name: "The Great Wave of Kanagawa",
-        author: "Hokusai",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "300",
-        id: "3"
-    }, {
-        image: "/item-images/the-great-wave-of-kanagawa.jpg",
-        name: "The Great Wave of Kanagawa",
-        author: "Hokusai",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "300",
-        id: "3"
-    }, {
-        image: "/item-images/the-great-wave-of-kanagawa.jpg",
-        name: "The Great Wave of Kanagawa",
-        author: "Hokusai",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad alias autem beatae, consectetur deleniti dolores doloribus ea eligendi eos fugiat ipsum labore necessitatibus nostrum placeat, quas quo voluptates voluptatum.",
-        price: "300",
-        id: "3"
-    }];
+    let items = [];
+
+    onMount(async () => {
+        const response = await fetch("http://localhost:3000/products", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        items = await response.json();
+        console.log(items);
+    });
+
 </script>
 
 <section class="main-container">

@@ -3,23 +3,11 @@ import express from 'express';
 import token from './routers/token-router.js';
 import productsRouter from "./routers/products-router.js";
 import usersRouter from "./routers/users-router.js";
-
-// NOTE
-// Checking the access rights of the client - authorization
-// Checking if the client is logged in - authentications
-
-// import bcrypt from "bcrypt"
-// import jwt from "jsonwebtoken"
-// import {salt, secret} from "./constants.js";
-//
-// bcrypt.hash(password, salt, () => {
-// })
-// bcrypt.compare(password, hasedPassword, () => {
-// })
-// jwt.verify(token, secret, () => {
-// });
+import cors from 'cors'
 
 const app = express();
+app.use(cors());
+app.use(express.urlencoded({limit: '50mb', extended: true}))
 app.use(express.json());
 
 const port = 3000;
