@@ -3,11 +3,9 @@
     import Button from "./Button.svelte";
 
     const dispatch = createEventDispatcher();
-    export let header, buttonClass, formClass;
+    export let header, buttonClass, buttonText, formClass;
     let form;
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
+    const handleSubmit = () => {
         let formData = new FormData(form);
         let json = {};
         formData.forEach((value, key) => {
@@ -23,9 +21,9 @@
 <section class="form-container">
     <section class={formClass}>
         <h1 class="form-title">{header}</h1>
-        <form bind:this={form} on:submit={handleSubmit} class="form">
+        <form bind:this={form} on:submit|preventDefault={handleSubmit} class="form">
             <slot/>
-            <Button className={buttonClass} text="Register" type="submit" onClick={()=>{}}/>
+            <Button className={buttonClass} text={buttonText} type="submit" onClick={()=>{}}/>
         </form>
     </section>
 </section>

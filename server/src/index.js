@@ -12,7 +12,7 @@ app.use(express.json());
 
 const port = 3000;
 
-app.use("/token", token);
+app.use('/token', token);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use((req, res) => res.status(404).send('Sorry, that resource does not exist!'))

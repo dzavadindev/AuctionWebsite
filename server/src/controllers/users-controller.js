@@ -51,6 +51,8 @@ export const updateUser = (req, res) => {
 }
 export const addUser = (req, res) => {
 
+    console.log(req.body)
+
     const {username, email, password} = req.body
     const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
     if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
