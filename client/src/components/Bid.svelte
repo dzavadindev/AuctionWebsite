@@ -4,7 +4,7 @@
 
 <div class="bid-container">
     <p class="username">{username}</p>
-    <p class="bid-amount">{bid}</p>
+    <p class="bid-amount">{bid}€</p>
 </div>
 
 <style>

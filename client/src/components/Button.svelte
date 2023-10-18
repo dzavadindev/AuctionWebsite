@@ -1,7 +1,8 @@
 <script>
     export let className;
     export let text;
-    export let onClick = () => {};
+    export let onClick = () => {
+    };
     export let type = "button";
 
 </script>
@@ -22,10 +23,8 @@
     }
 
     .button {
-        width: 90px;
-        height: 30px;
         background-color: green;
-        padding: 0;
+        padding: 0.5em 1em;
         margin: 0;
     }
 

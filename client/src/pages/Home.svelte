@@ -12,7 +12,6 @@
             }
         });
         items = await response.json();
-        console.log(items);
     });
 
 </script>
@@ -66,6 +65,7 @@
     .items-container {
         display: flex;
         flex-wrap: wrap;
+        flex-direction: row;
         justify-content: space-between;
         padding: 1%;
         box-sizing: content-box;

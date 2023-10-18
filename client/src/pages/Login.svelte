@@ -2,18 +2,19 @@
     import InputField from "../components/InputField.svelte";
     import Form from "../components/Form.svelte";
     import {token} from "../store.js"
+    import page from "page";
 
     const login = async (event) => {
         const response = await fetch("http://localhost:3000/token", {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify(event.detail)
         });
-        console.log(response);
         let resToken = await response.json();
-        console.log(resToken);
         token.set(resToken);
+        page("/home")
     }
 
 </script>

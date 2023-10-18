@@ -4,15 +4,18 @@
 
     export let active;
 
-    const moveToLogin = () => {
-        page("/login");
+    const moveToRegister = () => {
+        page("/register");
     }
 
 </script>
 
 <nav class="header">
-    <h1 class="title">{active}</h1>
-    <Button className="login-button" text="Login" onClick={moveToLogin}/>
+    <h1 class="title">
+        <a href="/home"><img src="/home.svg" alt=""></a>
+        <span>{active}</span>
+    </h1>
+    <Button className="register-button" text="Register" onClick={moveToRegister}/>
 </nav>
 
 <style>
@@ -26,6 +29,8 @@
     }
 
     .title {
+        display: flex;
         font-size: 21px;
+        align-items: center;
     }
 </style>

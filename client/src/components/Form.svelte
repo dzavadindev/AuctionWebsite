@@ -23,6 +23,13 @@
         <h1 class="form-title">{header}</h1>
         <form bind:this={form} on:submit|preventDefault={handleSubmit} class="form">
             <slot/>
+            <p class="switch-block">
+                {#if header === "Login"}
+                    Don't have an account? <a href="/register">Register</a>
+                {:else if header === "Register"}
+                    Already have an account? <a href="/login">Login</a>
+                {/if}
+            </p>
             <Button className={buttonClass} text={buttonText} type="submit" onClick={()=>{}}/>
         </form>
     </section>

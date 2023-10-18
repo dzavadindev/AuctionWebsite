@@ -8,13 +8,7 @@
     }
 </script>
 
-<div id={id}
-     on:click={navigateToDetails}
-     on:keydown={navigateToDetails}
-     role="button"
-     tabindex="0"
-     class="item">
-
+<div id={id} on:click={navigateToDetails} on:keydown={navigateToDetails} role="button" tabindex="0" class="item">
     <div class="image-wrapper">
         <img class="image" src={image} alt={"item" + id}>
     </div>

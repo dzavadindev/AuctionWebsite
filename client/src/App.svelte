@@ -16,20 +16,20 @@
 
     router('/home', (ctx) => {
         page = Home;
-        currentRoute = ctx.pathname;
+        currentRoute = "Home";
     });
     router('/login', (ctx) => {
         page = Login;
-        currentRoute = ctx.pathname;
+        currentRoute = "Login";
     });
     router('/details/:id', (ctx) => {
         page = Details;
-        currentRoute = ctx.pathname;
+        currentRoute = "Item";
         params = ctx.params;
     });
     router('/register', (ctx) => {
         page = Register;
-        currentRoute = ctx.pathname;
+        currentRoute = "Register";
     });
     router('/*', defaultHandler)
 
