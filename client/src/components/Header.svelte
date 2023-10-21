@@ -1,6 +1,7 @@
 <script>
     import Button from "./Button.svelte";
     import page from "page";
+    import token from "../store.js"
 
     export let active;
 
@@ -15,7 +16,11 @@
         <a href="/home"><img src="/home.svg" alt=""></a>
         <span>{active}</span>
     </h1>
+    {#if $token}
     <Button className="register-button" text="Register" onClick={moveToRegister}/>
+    {:else }
+
+    {/if}
 </nav>
 
 <style>
