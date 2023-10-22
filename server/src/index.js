@@ -6,7 +6,9 @@ import usersRouter from "./routers/users-router.js";
 import cors from 'cors'
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    exposedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.urlencoded({limit: '50mb', extended: true}))
 app.use(express.json());
 

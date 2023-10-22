@@ -1,14 +1,14 @@
 <script>
     import Bid from "../components/Bid.svelte";
     import Button from "../components/Button.svelte";
+    import InputField from "../components/InputField.svelte";
     import {token} from "../store.js";
     import {onMount} from 'svelte';
+
     export let params;
     let item = {};
-    let itemFound;
-    let showPopup = false;
-    let popup;
-    let bidValue;
+    let showPopup = false, bidSubmissionFailed = false;
+    let bidValue, itemFound, popup;
 
     onMount(async () => {
         document.addEventListener('click', (event) => {
@@ -24,40 +24,51 @@
             }
         });
         item = await response.json();
-        console.log(item);
         itemFound = response.ok;
-
     });
 
     const bidTen = async () => {
-        await fetch("http://localhost:3000/products", {
+        const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorisation": `Bearer ${$token}`
+                "Authorization": `Bearer ${$token}`
             },
             body: JSON.stringify({"bid": 10 + item.price})
         })
+        if (response.ok) {
+            showPopup = false;
+            bidSubmissionFailed = false
+        }
     }
     const bidHundred = async () => {
-        await fetch("http://localhost:3000/products", {
+        const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorisation": `Bearer ${$token}`
+                "Authorization": `Bearer ${$token}`
             },
             body: JSON.stringify({"bid": 100 + item.price})
         })
+        if (response.ok) {
+            showPopup = false;
+            bidSubmissionFailed = false
+        }
     }
     const bidCustom = async (bid) => {
-        await fetch("http://localhost:3000/products", {
+        const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorisation": `Bearer ${$token}`
+                "Authorization": `Bearer ${$token}`
             },
             body: JSON.stringify({"bid": bid})
         })
+        if (!response.ok) {
+            bidSubmissionFailed = true;
+        } else {
+            showPopup = false;
+        }
     }
 
 </script>
@@ -102,9 +113,11 @@
 
 <section class="popup-background" style="display: {showPopup ? 'flex' : 'none'}">
     <div bind:this={popup} class="popup">
-        <input type="number" placeholder="Enter your bid" />
-<!--        <InputField />-->
-        <Button text="Submit" className="your-bid-submit-button" onClick={bidCustom()}/>
+        <InputField inputType="number" labelText="Your bid" inputName="bid" bind:inputValue={bidValue}/>
+        <Button text="Bid" className="your-bid-submit-button" onClick={() => bidCustom(bidValue)}/>
+        {#if bidSubmissionFailed}
+            <span style="color: red">Couldn't place your bid, check if its valid again</span>
+        {/if}
     </div>
 </section>
 
@@ -162,6 +175,8 @@
     }
 
     .popup {
+        display: flex;
+        flex-direction: column;
         padding: 20px;
         background-color: white;
         z-index: 1000;

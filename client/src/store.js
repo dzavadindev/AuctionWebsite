@@ -1,3 +1,16 @@
 import {writable} from "svelte/store";
 
-export const token = writable();
+const persist = (key, value) => {
+    const storedValue = sessionStorage.getItem(key);
+    const data = storedValue ? JSON.parse(storedValue) : value;
+    const store = writable(data);
+
+    store.subscribe(($data) => {
+        sessionStorage.setItem(key, JSON.stringify($data));
+    });
+
+    return store;
+}
+
+export const token = persist('token', "");
+export const userEmail = persist('userEmail', "");
