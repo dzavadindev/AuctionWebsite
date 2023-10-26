@@ -11,21 +11,28 @@
 
 <style>
     button.bid-button {
-        background-color: pink;
+        background-color: #5b1e70;
     }
 
     button.login-button {
-
+        background-color: #8616ab;
     }
 
     button.register-button {
+        background-color: #680488;
+    }
 
+    button.add-product-button {
+        background-color: #739302;
     }
 
     .button {
-        background-color: green;
+        border: none;
+        border-radius: 2rem;
+        outline: none;
         padding: 0.5em 1em;
         margin: 0;
+        color: #f2eaff;
     }
 
 </style>

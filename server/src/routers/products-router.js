@@ -2,8 +2,23 @@ import express from "express";
 import {addProduct, deleteProduct, getProduct, getProducts, updateProduct} from '../controllers/products-controller.js'
 import {addBid, getBids} from "../controllers/bids-controller.js";
 import {isAdmin, isLoggedIn} from "../middleware/middleware.js";
+// import path from "path";
 
 const productsRouter = express.Router();
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './images/beings');
+//     }, filename: (req, file, cb) => {
+//         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//     }
+// });
+//
+// // Multer instance
+// const upload = multer({storage: storage});
+//
+// // Multer middleware
+// const uploadMiddleware = upload.single('image');
 
 // Products
 productsRouter.get('/', getProducts);

@@ -12,8 +12,8 @@ export const getBids = (req, res) => {
 }
 export const addBid = (req, res) => {
     const {bid} = req.body;
-    console.log(bid)
     if (!bid || bid < 0) return res.status(422).send({"error": "invalid bid data provided"})
+
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message})
         let data = JSON.parse(json)
@@ -28,6 +28,6 @@ export const addBid = (req, res) => {
             if (err) console.log('Error writing file:', err);
             else console.log('Successfully updated file');
         })
-        res.status(201).send(product.bids[product.bids.length])
+        res.status(201).send(product)
     })
 }

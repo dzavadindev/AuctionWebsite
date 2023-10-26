@@ -18,6 +18,10 @@ export const getUser = (req, res) => {
     })
 }
 export const deleteUser = (req, res) => {
+    const {username, email, password} = req.body
+    const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
+    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
+
     fs.readFile(usersJsonPath, "utf8", (err, json) => {
         if (err) res.status(500).send({"error": err.message});
         let data = JSON.parse(json);
@@ -33,8 +37,10 @@ export const deleteUser = (req, res) => {
     })
 }
 export const updateUser = (req, res) => {
-    const {username, email} = req.body;
-    if (!username && !email) return res.status(422).send({"error": "invalid user data provided"})
+    const {username, email, password} = req.body
+    const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
+    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
+
     fs.readFile(usersJsonPath, "utf8", (err, json) => {
         if (err) res.status(500).send({"error": err.message});
         let data = JSON.parse(json);
@@ -50,9 +56,6 @@ export const updateUser = (req, res) => {
     })
 }
 export const addUser = (req, res) => {
-
-    console.log(req.body)
-
     const {username, email, password} = req.body
     const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
     if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})

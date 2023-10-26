@@ -49,6 +49,11 @@
 
     main {
         text-align: center;
+        color: #f2eaff;
+    }
+
+    main :global(a) {
+        color: #1cc5ac;
     }
 
 </style>

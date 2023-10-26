@@ -1,6 +1,7 @@
 <script>
     import Item from "../components/Item.svelte";
     import {onMount} from 'svelte';
+    import InputField from "../components/InputField.svelte";
 
     let items = [];
 
@@ -12,22 +13,33 @@
             }
         });
         items = await response.json();
+        items = items.map(item => ({ ...item, visible: true }));
     });
+
+    const search = (event) => {
+        let searchTerm = event.target.value.toLowerCase();
+        items = items.map(item => {
+            let matcher = item.name.toLowerCase() + item.author.toLowerCase();
+            return { ...item, visible: matcher.includes(searchTerm) };
+        });
+    }
 
 </script>
 
 <section class="main-container">
-    <section class="filter">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aut beatae debitis,
-        dolorum ducimus enim exercitationem illo ipsam maxime molestias natus, necessitatibus neque perferendis quidem
-        rem reprehenderit soluta temporibus. Eos molestias necessitatibus nulla sit voluptates. Aliquid animi
-        consequuntur corporis debitis delectus ea fuga impedit ipsam itaque iusto magnam modi nihil obcaecati provident,
-        quod quos ratione soluta, tempore ut vel! Autem consectetur, illum inventore iste laborum laudantium nemo quos
-        totam! Alias deleniti fuga, impedit libero nisi officia repudiandae sint sit tenetur! Alias aliquam architecto
-        aspernatur atque aut, autem eveniet, ipsum iure laudantium magni molestias nesciunt nobis officiis perferendis
-        sed ullam vero!
+    <section class="filter">
+        <InputField labelText="Country" inputType="text" inputName="country"/>
+        <div class="range-filter">
+            <InputField labelText="Year Min" inputType="number" inputName="yearMin"/>
+            <InputField labelText="Year Max" inputType="number" inputName="yearMax"/>
+        </div>
+        <div class="range-filter">
+            <InputField labelText="Price Min" inputType="number" inputName="priceMin"/>
+            <InputField labelText="Price Max" inputType="number" inputName="priceMax"/>
+        </div>
     </section>
     <div class="searchbar-container">
-        <input class="searchbar" type="text" name="searchQuery" id="searchBar">
+        <input on:input={(e) => search(e)} class="searchbar" type="text" name="searchQuery" id="searchBar">
     </div>
     <div class="items-container">
         {#each items as item}
@@ -36,40 +48,59 @@
     </div>
 </section>
 
+
+
+
+
 <style>
     .main-container {
         display: grid;
-        gap: 4%;
+        gap: 1%;
         grid-template-columns: 1fr 4fr;
         grid-template-rows: 5vh 1fr;
     }
 
     .filter {
         display: flex;
-        background-color: red;
+        flex-direction: column;
+        padding: 0.5rem;
+        background-color: #2277f6;
         grid-row: 1 / span 2;
+    }
+
+    .range-filter {
+        display: flex;
+        justify-content: space-between;
     }
 
     .searchbar-container {
         display: flex;
-        background-color: blue;
         grid-row: 1;
         grid-column: 2;
     }
 
     .searchbar {
+        color: #000831;
         font-size: 25px;
+        border: 1px solid #c3bbff;
+        border-radius: 0.4em;
+        outline: none;
+        background-color: #e3dfff;
         width: 100%;
+        padding: 0 1em;
     }
 
     .items-container {
-        display: flex;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(3, minmax(100px, 1fr));
+        justify-content: space-between;
+        padding: 1rem;
         flex-wrap: wrap;
         flex-direction: row;
-        justify-content: space-between;
-        padding: 1%;
+        overflow: hidden;
         box-sizing: content-box;
-        background-color: green;
+        background-color: #5272c4;
         grid-row: 2;
         grid-column: 2;
     }

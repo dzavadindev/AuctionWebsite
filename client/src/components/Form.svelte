@@ -19,7 +19,7 @@
 </script>
 
 <section class="form-container">
-    <section class={formClass}>
+    <section class={formClass + " form"}>
         <h1 class="form-title">{header}</h1>
         <form bind:this={form} on:submit|preventDefault={handleSubmit} class="form">
             <slot/>
@@ -49,20 +49,23 @@
         margin: 0 0 1vh 0;
     }
 
-    section.login-form {
+    .form {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 5vh 3vw;
-        background-color: gold;
+        padding: 1rem;
+    }
+
+    section.add-product-form {
+        background-color: #00af32;
+    }
+
+    section.login-form {
+        background-color: #7661ff;
     }
 
     section.register-form {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 5vh 3vw;
-        background-color: gold;
+        background-color: #8b43b6;
     }
 
 </style>

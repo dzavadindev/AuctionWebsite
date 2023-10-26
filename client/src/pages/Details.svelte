@@ -8,7 +8,7 @@
     export let params;
     let item = {};
     let showPopup = false, bidSubmissionFailed = false;
-    let bidValue, itemFound, popup;
+    let bidValue, popup;
 
     onMount(async () => {
         document.addEventListener('click', (event) => {
@@ -24,7 +24,6 @@
             }
         });
         item = await response.json();
-        itemFound = response.ok;
     });
 
     const bidTen = async () => {
@@ -39,6 +38,7 @@
         if (response.ok) {
             showPopup = false;
             bidSubmissionFailed = false
+            item = await response.json();
         }
     }
     const bidHundred = async () => {
@@ -53,6 +53,7 @@
         if (response.ok) {
             showPopup = false;
             bidSubmissionFailed = false
+            item = await response.json();
         }
     }
     const bidCustom = async (bid) => {
@@ -68,12 +69,13 @@
             bidSubmissionFailed = true;
         } else {
             showPopup = false;
+            item = await response.json();
         }
     }
 
 </script>
 
-{#if itemFound}
+{#if item}
     <section class="item-details">
         <section class="image-and-bidding-container">
             <div class="image-wrapper">
@@ -100,11 +102,13 @@
         </section>
         <div class="bids-container">
             <h3>Recent bids:</h3>
-            {#if item.bids}
-                {#each item.bids as bid}
-                    <Bid username={bid.username} bid={bid.bid}/>
-                {/each}
-            {/if}
+            <div class="bids-scroll-box">
+                {#if item.bids}
+                    {#each item.bids as bid}
+                        <Bid username={bid.username} bid={bid.bid}/>
+                    {/each}
+                {/if}
+            </div>
         </div>
     </section>
 {:else}
@@ -131,9 +135,10 @@
 
     .image-and-bidding-container {
         display: flex;
+        align-items: center;
         justify-content: space-evenly;
         flex-direction: column;
-        background-color: yellow;
+        background-color: #375ab4;
     }
 
     .buttons-container {
@@ -141,6 +146,8 @@
     }
 
     .image-wrapper {
+        max-width: 30rem;
+        max-height: 30rem;
         display: flex;
     }
 
@@ -165,13 +172,20 @@
         flex-direction: column;
         justify-content: space-around;
         padding: 0 1em;
-        background-color: yellow;
+        background-color: #5272c4;
     }
 
     .bids-container {
+        overflow-y: hidden;
         display: flex;
         flex-direction: column;
         background-color: magenta;
+    }
+
+    .bids-scroll-box {
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
     }
 
     .popup {

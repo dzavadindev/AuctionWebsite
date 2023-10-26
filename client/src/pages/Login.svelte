@@ -1,7 +1,7 @@
 <script>
     import InputField from "../components/InputField.svelte";
     import Form from "../components/Form.svelte";
-    import {token, userEmail} from "../store.js"
+    import {token, user} from "../store.js"
     import page from "page";
 
     const login = async (event) => {
@@ -14,7 +14,7 @@
         });
         let json = await response.json();
         token.set(json.token);
-        userEmail.set(json.email)
+        user.set(json.user)
         page("/home")
     }
 

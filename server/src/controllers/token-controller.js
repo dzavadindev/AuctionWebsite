@@ -19,7 +19,7 @@ export const handleLogin = (req, res) => {
                     "email": foundUser.email,
                     "admin": foundUser.admin
                 }, secret)
-                res.status(201).json({"token": token, "email": foundUser.email})
+                res.status(201).json({"token": token, "user": foundUser})
             } else return res.status(401).send({"error": "Invalid password. Unauthenticated"});
         })
     })

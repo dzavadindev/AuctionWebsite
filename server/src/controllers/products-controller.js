@@ -32,6 +32,10 @@ export const deleteProduct = (req, res) => {
     })
 }
 export const updateProduct = (req, res) => {
+    const {image, name, author, description, price, country, year} = req.body
+    if (!image || !name || !author || !description || !price || !country || !year) return res.status(422).send({"error":"Invalid payload"})
+    if (price < 0 || year < 0) return res.status(422).send({"error":"Invalid payload"})
+
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message});
         let data = JSON.parse(json);
@@ -49,7 +53,10 @@ export const updateProduct = (req, res) => {
     })
 }
 export const addProduct = (req, res) => {
-    // apply some other shit
+    const {image, name, author, description, price, country, year} = req.body;
+    if (!image || !name || !author || !description || !price || !country || !year) return res.status(422).send({"error":"Invalid payload"})
+    if (price < 0 || year < 0) return res.status(422).send({"error":"Invalid payload"})
+
     fs.readFile(productsJsonPath, "utf8", (err, json) => {
         if (err) return res.status(500).send({"error": err.message})
         let data = JSON.parse(json)

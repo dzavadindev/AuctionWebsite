@@ -1,26 +1,21 @@
 <script>
     import Button from "./Button.svelte";
     import page from "page";
-    import {token, userEmail} from "../store.js"
+    import {token, user} from "../store.js"
 
     export let active;
-
-    const moveToLogin = () => {
-        page("/login");
-    }
-
 </script>
 
 <nav class="header">
-    <h1 class="title">
-        <a href="/home"><img src="/home.svg" alt=""></a>
-        <span>{active}</span>
-    </h1>
-    {#if !$token}
-        <Button className="login-button" text="Login" onClick={moveToLogin}/>
-    {:else }
-        <span class="email">{$userEmail}</span>
-    {/if}
+    <a href="/home"><img src="home.svg" alt=""></a>
+    <span style="font-size: 31px">{active}</span>
+    <div class="user-data">
+        {#if !$token}
+            <Button className="login-button" text="Login" onClick={()=> page("/login")}/>
+        {:else }
+            <span class="email">{$user.email}</span>
+        {/if}
+    </div>
 </nav>
 
 <style>
@@ -30,7 +25,7 @@
         align-items: center;
         padding: 0.5em 1em;
         margin-bottom: 1em;
-        background-color: purple;
+        background-color: #7b52e0;
     }
 
     .email {

@@ -1,14 +1,20 @@
 <script>
     import page from "page";
+    import {token} from "../store.js"
 
-    export let image, name, price, id, author;
+    export let image, name, price, id, author, visible;
 
     const navigateToDetails = () => {
+        if (!$token) {
+            alert("You are not logged in. Log in to view this content!")
+            return;
+        }
         page(`/details/${id}`);
     }
 </script>
 
-<div id={id} on:click={navigateToDetails} on:keydown={navigateToDetails} role="button" tabindex="0" class="item">
+<div id={id} on:click={navigateToDetails} on:keydown={navigateToDetails} role="button" tabindex="0" class="item"
+     style="display: {visible ? 'block' : 'none'};">
     <div class="image-wrapper">
         <img class="image" src={image} alt={"item" + id}>
     </div>
@@ -18,14 +24,11 @@
 
 <style>
     .item {
-        display: flex;
-        object-fit: contain;
-        max-height: 25rem;
-        width: 22vw;
+        border-radius: 1rem;
         margin: 1vh 0;
         padding: 1vw;
-        flex-direction: column;
-        background-color: yellow;
+        background-color: #8f6fe7;
+        box-sizing: border-box;
     }
 
     .image-wrapper {
@@ -40,11 +43,13 @@
     }
 
     .item-name {
+        justify-content: center;
         display: flex;
         margin: 0;
     }
 
     .item-price {
+        justify-content: center;
         display: flex;
         margin: 0;
     }

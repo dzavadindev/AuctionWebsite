@@ -13,7 +13,7 @@
         padding: 0.5em 1em;
         flex-direction: row;
         justify-content: space-between;
-        background-color: grey;
+        background-color: #3458b4;
     }
 
     .username {
