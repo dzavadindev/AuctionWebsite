@@ -1,23 +1,17 @@
 <script>
-    export let labelText, inputType, inputName;
-    export let inputValue;
+    export let inputType, inputName;
+    export let labelText = "", inputValue = "", className = "", placeholder = "";
 </script>
 
 <div class="form-field-container">
     <label for={inputName}>
         <span class="field-label">{labelText}</span>
         {#if inputType === 'text'}
-            <input type="text" class="form-field" bind:value={inputValue} name={inputName}/>
+            <input type="text" class={`form-field ${className}`} bind:value={inputValue} name={inputName} {placeholder}/>
         {:else if inputType === 'password'}
-            <input type="password" class="form-field" bind:value={inputValue} name={inputName}/>
+            <input type="password" class={`form-field ${className}`} bind:value={inputValue} name={inputName} {placeholder}/>
         {:else if inputType === 'number'}
-            <input type="number" class="form-field" bind:value={inputValue} name={inputName}/>
-        {:else if inputType === 'file'}
-            <input type="file" class="form-field" bind:value={inputValue} name={inputName}/>
-        {:else if inputType === 'textarea'}
-            <textarea class="form-field" bind:value={inputValue} name={inputName}/>
-        {:else if inputType === 'range'}
-            <input type="range" class="form-field" bind:value={inputValue} name={inputName}/>
+            <input type="number" class={`form-field ${className}`} bind:value={inputValue} name={inputName} {placeholder}/>
         {/if}
     </label>
 </div>
@@ -49,4 +43,7 @@
         width: 100%;
     }
 
+    input.filter-field {
+        border-radius: 0;
+    }
 </style>

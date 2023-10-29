@@ -4,11 +4,13 @@
     import InputField from "../components/InputField.svelte";
     import {token} from "../store.js";
     import {onMount} from 'svelte';
+    import {differenceInSeconds, parse} from "date-fns";
+    import Countdown from "../lib/Countdown.svelte";
 
     export let params;
     let item = {};
     let showPopup = false, bidSubmissionFailed = false;
-    let bidValue, popup;
+    let bidValue, popup, auctionEnded;
 
     onMount(async () => {
         document.addEventListener('click', (event) => {
@@ -24,6 +26,7 @@
             }
         });
         item = await response.json();
+        auctionEnded = differenceInSeconds(parse(item.endDate, "dd-MM-yyyy", new Date()), Date.now()) <= 0;
     });
 
     const bidTen = async () => {
@@ -81,20 +84,32 @@
             <div class="image-wrapper">
                 <img class="item-image" src={item.image} alt={"item " + item.name}>
             </div>
-            <div class="buttons-container">
-                <Button className="bid-button" text="+10€" onClick={bidTen}/>
-                <Button className="bid-button" text="+100€" onClick={bidHundred}/>
-                <Button className="bid-button" text="Your bid" onClick={()=>showPopup = true}/>
-            </div>
+            {#if auctionEnded}
+                <div class="item-sold">
+                    Item sold for {item.price} to <!--{item.buyer}!--> Buyer
+                </div>
+            {:else}
+                <div class="buttons-container">
+                    <Button className="bid-button" text="+10€" onClick={bidTen}/>
+                    <Button className="bid-button" text="+100€" onClick={bidHundred}/>
+                    <Button className="bid-button" text="Your bid" onClick={()=>showPopup = true}/>
+                </div>
+            {/if}
         </section>
         <section class="description-container">
             <div class="description">
                 <h1 class="painting">
-                    "{item.name}" by {item.author}
+                    "{item.name}" by {item.author} <br>
+                    Year of creation: {item.year} <br>
+                    Country of origin: {item.country} <br>
                 </h1>
-                <p>
-                    {item.description}
-                </p>
+                {#if !auctionEnded}
+                    <p>
+                        Auction will end in:
+                        <Countdown targetDate={parse(item.endDate, "dd-MM-yyyy", new Date())}/>
+                    </p>
+                {/if}
+                <p>{item.description}</p>
             </div>
             <p class="price">
                 Current bid: {item.price}€

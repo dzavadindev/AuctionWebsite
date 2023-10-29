@@ -1,33 +1,63 @@
-import fs from "fs";
 import {productsJsonPath} from "../constants.js";
+import {readJsonFile, writeJsonFile} from "../utils/file-io.js";
 
-export const getBids = (req, res) => {
-    fs.readFile(productsJsonPath, "utf8", (err, json) => {
-        if (err) return res.status(500).send({"error": err.message});
-        let data = JSON.parse(json);
-        let product = data.find(el => Number(req.params.id) === el.id)
-        if (product) res.status(200).send(product.bids);
-        else res.status(404).send({"error": "product not found"})
-    })
-}
-export const addBid = (req, res) => {
+export const getBids = async (req, res) => {
+    try {
+        const products = await readJsonFile(productsJsonPath);
+        const product = products.find(el => Number(req.params.id) === el.id);
+        if (product) res.status(200).send(product.bids || []);
+        else res.status(404).send({"error": "product not found"});
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
+
+export const addBid = async (req, res) => {
     const {bid} = req.body;
-    if (!bid || bid < 0) return res.status(422).send({"error": "invalid bid data provided"})
+    if (!bid || bid < 0) return res.status(422).send({"error": "invalid bid data provided"});
 
-    fs.readFile(productsJsonPath, "utf8", (err, json) => {
-        if (err) return res.status(500).send({"error": err.message})
-        let data = JSON.parse(json)
-        let product = data.find(el => Number(req.params.id) === el.id)
-        console.log("before 400")
-        if (product.price >= bid) return res.status(400).send({"error": "Your bid cannot be lower than items current price"})
-        if (!product.bids) product.bids = [];
-        product.price = bid;
-        product.bids.push({...req.body, username: req.user.username, id: product.bids.length});
-        console.log("after 400")
-        fs.writeFile(productsJsonPath, JSON.stringify(data), () => {
-            if (err) console.log('Error writing file:', err);
-            else console.log('Successfully updated file');
-        })
-        res.status(201).send(product)
-    })
-}
+    try {
+        const products = await readJsonFile(productsJsonPath);
+        const productIndex = products.findIndex(el => Number(req.params.id) === el.id);
+        if (productIndex !== -1) {
+            const product = products[productIndex];
+            if (product.price >= bid) return res.status(400).send({"error": "Your bid cannot be lower than items current price"});
+            if (!product.bids) product.bids = [];
+            product.price = bid;
+            product.bids.push({...req.body, username: req.user.username, id: product.bids.length});
+            await writeJsonFile(productsJsonPath, products);
+            res.status(201).send(product);
+        } else {
+            res.status(404).send({"error": "product not found"});
+        }
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
+
+export const removeBid = async (req, res) => {
+    const {id, bidId} = req.params;
+
+    try {
+        const products = await readJsonFile(productsJsonPath);
+        const productIndex = products.findIndex(el => Number(id) === el.id);
+        if (productIndex !== -1) {
+            const {bids} = products[productIndex];
+            const foundBid = bids.find(bid => bid.id === Number(bidId));
+            if (!foundBid) return res.status(404).send({"error": "Bid not found"});
+            if (req.user.username !== foundBid.username) return res.status(401).send({"error": "You can't delete another person's bid"});
+            if (Number(bidId) === bids.length - 1) {
+                bids.splice(Number(bidId), 1);
+                products[productIndex].price = bids.length > 0 ? bids[bids.length - 1].bid : initialPrice;
+                await writeJsonFile(productsJsonPath, products);
+                res.status(200).send(products[productIndex]);
+            } else {
+                res.status(400).send({"error": "You cannot delete a bid that is not the last bid made for a product"});
+            }
+        } else {
+            res.status(404).send({"error": "Product not found"});
+        }
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};

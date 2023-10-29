@@ -7,7 +7,7 @@
 </script>
 
 <nav class="header">
-    <a href="/home"><img src="home.svg" alt=""></a>
+    <a href="/home"><img src="/home.svg" alt=""></a>
     <span style="font-size: 31px">{active}</span>
     <div class="user-data">
         {#if !$token}

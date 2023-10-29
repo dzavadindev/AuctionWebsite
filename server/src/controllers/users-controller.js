@@ -1,82 +1,98 @@
-import fs from "fs";
 import bcrypt from "bcrypt"
-import {usersJsonPath, saltRounds} from "../constants.js";
+import {usersJsonPath, saltRounds, secret} from "../constants.js";
+import {readJsonFile, writeJsonFile} from "../utils/file-io.js";
+import jwt from "jsonwebtoken";
 
-export const getUsers = (req, res) => {
-    fs.readFile(usersJsonPath, "utf8", (err, json) => {
-        if (err) res.status(500).send({"error": err.message});
-        res.status(200).send(json);
-    })
-}
-export const getUser = (req, res) => {
-    fs.readFile(usersJsonPath, "utf8", (err, json) => {
-        if (err) res.status(500).send({"error": err.message});
-        let data = JSON.parse(json);
-        let user = data.find(el => req.params.username === el.username)
-        if (user) res.status(200).send(user);
-        res.status(404).send({"error": "user not found"})
-    })
-}
-export const deleteUser = (req, res) => {
-    const {username, email, password} = req.body
-    const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
-    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
+export const getUsers = async (req, res) => {
+    try {
+        const users = await readJsonFile(usersJsonPath);
+        res.status(200).send(users);
+    } catch (err) {
+        res.status(500).send({"error": err.message})
+    }
+};
+export const getUser = async (req, res) => {
+    try {
+        const users = await readJsonFile(usersJsonPath)
+        const user = users.find(u => u.username === req.params.username)
+        if (user) res.status(200).send(user)
+        else res.status(404).send({"error": "user not found"})
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
+export const deleteUser = async (req, res) => {
+    const {username, email} = req.body;
+    if (!username || !email) return res.status(422).send({"error": "invalid user data provided"});
 
-    fs.readFile(usersJsonPath, "utf8", (err, json) => {
-        if (err) res.status(500).send({"error": err.message});
-        let data = JSON.parse(json);
-        let user = data.find(el => req.params.username === el.username)
-        if (user) {
-            delete data[data.indexOf(user)];
-            fs.writeFile(usersJsonPath, JSON.stringify(data), () => {
-                if (err) console.log('Error writing file:', err);
-                else console.log('Successfully updated file');
-            })
-            res.status(200).send(user)
-        } else res.status(404).send({"error": "user not found"})
-    })
-}
-export const updateUser = (req, res) => {
-    const {username, email, password} = req.body
-    const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
-    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
+    try {
+        const users = await readJsonFile(usersJsonPath);
+        const userIndex = users.findIndex(u => u.username === req.params.username);
 
-    fs.readFile(usersJsonPath, "utf8", (err, json) => {
-        if (err) res.status(500).send({"error": err.message});
-        let data = JSON.parse(json);
-        let user = data.indexOf(data.find(el => req.params.username === el.username))
-        if (user !== -1) {
-            data[user] = req.body
-            fs.writeFile(usersJsonPath, JSON.stringify(data), () => {
-                if (err) console.log('Error writing file:', err);
-                else console.log('Successfully updated file');
-            })
-            res.status(200).send(data[user]);
-        } else res.status(404).send({"error": "user not found"})
-    })
-}
-export const addUser = (req, res) => {
-    const {username, email, password} = req.body
-    const validEmail = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$".search(email);
-    if (!username && !validEmail && !password) return res.status(422).send({"error": "invalid user data provided"})
+        if (
+            (users[userIndex].username !== req.user.username && users[userIndex].email === req.user.email) ||
+            !req.user.admin
+        ) return res.status(403).send({"error": "Unauthorized to perform that action. Account manipulation can only be handled by the owner user and hte administrators"})
 
-    fs.readFile(usersJsonPath, "utf8", (readErr, json) => {
-        if (readErr) res.status(500).send({"error": readErr.message})
-        let data = json ? JSON.parse(json) : [];
+        if (userIndex !== -1) {
+            const [user] = users.splice(userIndex, 1);
+            await writeJsonFile(usersJsonPath, users);
+            res.status(200).send(user);
+        } else {
+            res.status(404).send({"error": "User not found"});
+        }
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
 
-        const userExists = data.find(el => el.username === username && el.email === email);
-        if (userExists)
-            return res.status(409).send({"error": "Conflict. User already exists"})
+export const updateUser = async (req, res) => {
+    const {username, email, password} = req.body;
+    const validEmail = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/.test(email);
+    if (!username || !validEmail || !password) return res.status(422).send({"error": "invalid user data provided"});
 
-        bcrypt.hash(password, saltRounds, (hashErr, hash) => {
-            if (hashErr)
-                return res.status(500).send({"error": "Password hashing failed, try the request again - " + hashErr})
+    try {
+        const users = await readJsonFile(usersJsonPath);
+        const userIndex = users.findIndex(u => u.username === req.params.username);
 
-            data.push({"username": username, "email": email, "password": hash, admin: false});
-            fs.writeFile(usersJsonPath, JSON.stringify(data), writeErr => {
-                if (writeErr) return res.status(500).send({"error": "Error when writing into a file: ", writeErr})
-                res.status(201).send(data);
-            })
-        })
-    })
-}
+        if (
+            (users[userIndex].username !== req.user.username && users[userIndex].email === req.user.email) ||
+            !req.user.admin
+        ) return res.status(403).send({"error": "Unauthorized to perform that action. Account manipulation can only be handled by the owner user and hte administrators"})
+
+
+        if (userIndex !== -1) {
+            users[userIndex] = req.body;
+            await writeJsonFile(usersJsonPath, users);
+            res.status(200).send(users[userIndex]);
+        } else {
+            res.status(404).send({"error": "user not found"});
+        }
+
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
+
+export const addUser = async (req, res) => {
+    const {username, email, password} = req.body;
+    const validEmail = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/.test(email);
+    if (!username || !validEmail || !password) return res.status(422).send({"error": "invalid user data provided"});
+
+    try {
+        const users = await readJsonFile(usersJsonPath, []);
+        const userExists = users.some(u => u.username === username && u.email === email);
+        if (userExists) return res.status(409).send({"error": "Conflict. User already exists"});
+
+        const hash = await bcrypt.hash(password, saltRounds);
+        const newUser = {username, email, password: hash, admin: false, wonAuctions: []};
+        users.push(newUser);
+        await writeJsonFile(usersJsonPath, users);
+
+        const token = jwt.sign(newUser, secret)
+        res.status(201).json({"token": token, "user": newUser})
+    } catch (err) {
+        res.status(500).send({"error": err.message});
+    }
+};
+

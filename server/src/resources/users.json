@@ -1,14 +1,14 @@
 [
   {
-    "username": "mane",
-    "email": "goodguy@gmail.com",
-    "password": "$2b$15$nkU3qijbYswWBHnKoOLxUefFxsFoCdZwD/FEVooSNGbVh9JNDRm7m",
+    "username": "admin",
+    "email": "admin@gmail.com",
+    "password": "$2b$15$7X.J.Yj/ueytI6hNzOQv2Ohnu5UTy82BASnmpLDSd6rXaOrIl6sLG",
     "admin": true
   },
   {
-    "username": "callushUZZZ",
-    "email": "folk1ey@gmail.com",
-    "password": "$2b$15$c3365NdBflM.0upvNW37lu5E5LsP0kR2XvWYnMkfsyikwp0A5WFz6",
+    "username": "bobby",
+    "email": "bobby@gmail.com",
+    "password": "$2b$15$QjiSrBe7IxyrI7aMou1swekOTIAgCiNa2TOjwJkrKuxP7iLKbFdHa",
     "admin": false
   }
 ]

@@ -50,15 +50,18 @@
     }
 
     .form {
+        max-width: 20em ;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         padding: 1rem;
     }
 
-    section.add-product-form {
-        background-color: #00af32;
-    }
+   section.filter-form {
+       max-width: 20em ;
+       display: inline;
+       padding: 1rem;
+   }
 
     section.login-form {
         background-color: #7661ff;

@@ -1,5 +1,5 @@
 <script>
-    export let className;
+    export let className = "";
     export let text;
     export let onClick = () => {
     };
@@ -10,6 +10,11 @@
 <button type={type} class={className + " button"} on:click={onClick}>{text}</button>
 
 <style>
+   button.filter-button {
+       margin-top: 1em;
+       background-color: #2798de;
+   }
+
     button.bid-button {
         background-color: #5b1e70;
     }

@@ -2,6 +2,7 @@
     import Item from "../components/Item.svelte";
     import {onMount} from 'svelte';
     import InputField from "../components/InputField.svelte";
+    import Form from "../components/Form.svelte";
 
     let items = [];
 
@@ -13,14 +14,31 @@
             }
         });
         items = await response.json();
-        items = items.map(item => ({ ...item, visible: true }));
+        items = items.map(item => ({...item, visible: true}));
     });
 
     const search = (event) => {
         let searchTerm = event.target.value.toLowerCase();
         items = items.map(item => {
             let matcher = item.name.toLowerCase() + item.author.toLowerCase();
-            return { ...item, visible: matcher.includes(searchTerm) };
+            return {...item, visible: matcher.includes(searchTerm)};
+        });
+    }
+
+    const filter = (event) => {
+        let {country} = event.detail
+
+        let yearMin = event.detail.yearMin ? event.detail.yearMin : Number.MIN_VALUE;
+        let yearMax = event.detail.yearMax ? event.detail.yearMax : Number.MAX_VALUE;
+        let priceMin = event.detail.priceMin ? event.detail.priceMin : Number.MIN_VALUE;
+        let priceMax = event.detail.priceMax ? event.detail.priceMax : Number.MAX_VALUE;
+
+        items = items.map(item => {
+            let yearFilter = yearMin <= item.year && yearMax >= item.year;
+            let priceFilter = priceMin <= item.price && priceMax >= item.price;
+            let countryFilter = item.country.includes(country);
+
+            return {...item, visible: yearFilter && priceFilter && countryFilter};
         });
     }
 
@@ -28,18 +46,22 @@
 
 <section class="main-container">
     <section class="filter">
-        <InputField labelText="Country" inputType="text" inputName="country"/>
-        <div class="range-filter">
-            <InputField labelText="Year Min" inputType="number" inputName="yearMin"/>
-            <InputField labelText="Year Max" inputType="number" inputName="yearMax"/>
-        </div>
-        <div class="range-filter">
-            <InputField labelText="Price Min" inputType="number" inputName="priceMin"/>
-            <InputField labelText="Price Max" inputType="number" inputName="priceMax"/>
-        </div>
+        <Form header="Filters" buttonClass="filter-button" formClass="filter-form" buttonText="Filter"
+              on:submit={filter}>
+            <InputField labelText="Country" inputType="text" inputName="country" className="filter-field"/>
+            <div class="range-filter">
+                <InputField labelText="Year Min" inputType="number" inputName="yearMin" className="filter-field"/>
+                <InputField labelText="Year Max" inputType="number" inputName="yearMax" className="filter-field"/>
+            </div>
+            <div class="range-filter">
+                <InputField labelText="Price Min" inputType="number" inputName="priceMin" className="filter-field"/>
+                <InputField labelText="Price Max" inputType="number" inputName="priceMax" className="filter-field"/>
+            </div>
+        </Form>
     </section>
     <div class="searchbar-container">
-        <input on:input={(e) => search(e)} class="searchbar" type="text" name="searchQuery" id="searchBar">
+        <input on:input={search} class="searchbar" type="text" name="searchQuery" id="searchBar"
+               placeholder="Search">
     </div>
     <div class="items-container">
         {#each items as item}
@@ -47,10 +69,6 @@
         {/each}
     </div>
 </section>
-
-
-
-
 
 <style>
     .main-container {
@@ -73,8 +91,15 @@
         justify-content: space-between;
     }
 
+    .range-filter :global(.form-field-container) {
+        margin: 0 0.08em;
+    }
+
     .searchbar-container {
         display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        color: #000;
         grid-row: 1;
         grid-column: 2;
     }
@@ -86,7 +111,6 @@
         border-radius: 0.4em;
         outline: none;
         background-color: #e3dfff;
-        width: 100%;
         padding: 0 1em;
     }
 
