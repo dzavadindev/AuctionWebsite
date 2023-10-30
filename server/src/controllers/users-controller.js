@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import {usersJsonPath, saltRounds, secret} from "../constants.js";
+import {usersJsonPath, saltRounds, secret, productsJsonPath} from "../constants.js";
 import {readJsonFile, writeJsonFile} from "../utils/file-io.js";
 import jwt from "jsonwebtoken";
 
@@ -21,6 +21,18 @@ export const getUser = async (req, res) => {
         res.status(500).send({"error": err.message});
     }
 };
+
+// export const getUserWonAuctions = async (res, req) => {
+//     const {username} = req.params;
+//     if (username !== req.user.username) return res.status(403).send({"error": "can't access another clients won auctions"})
+//     try {
+//         const products = await readJsonFile(productsJsonPath);
+//         const participatedAuctions = products.filter(el => el.bids.includes())
+//     } catch (err) {
+//         res.status(500).send({"error": err.message})
+//     }
+// }
+
 export const deleteUser = async (req, res) => {
     const {username, email} = req.body;
     if (!username || !email) return res.status(422).send({"error": "invalid user data provided"});
@@ -85,7 +97,7 @@ export const addUser = async (req, res) => {
         if (userExists) return res.status(409).send({"error": "Conflict. User already exists"});
 
         const hash = await bcrypt.hash(password, saltRounds);
-        const newUser = {username, email, password: hash, admin: false, wonAuctions: []};
+        const newUser = {username, email, password: hash, admin: false};
         users.push(newUser);
         await writeJsonFile(usersJsonPath, users);
 

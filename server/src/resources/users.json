@@ -3,14 +3,12 @@
     "username": "admin",
     "email": "admin@gmail.com",
     "password": "$2b$15$H0tNTm72SkqfEjpUQP3uTuw4ernOku7WeVP1ZZFrU6ipheIVVHJ0q",
-    "admin": true,
-    "wonAuctions": []
+    "admin": true
   },
   {
     "username": "user",
     "email": "user@gmail.com",
     "password": "$2b$15$Zq6yrlWgR.JktvEwFMAq5.ShWyYx0TRTL12mx5XQ1hMlQphdNrwtS",
-    "admin": false,
-    "wonAuctions": []
+    "admin": false
   }
 ]

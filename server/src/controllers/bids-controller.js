@@ -1,5 +1,6 @@
 import {productsJsonPath} from "../constants.js";
 import {readJsonFile, writeJsonFile} from "../utils/file-io.js";
+import {differenceInHours, parse} from "date-fns";
 
 export const getBids = async (req, res) => {
     try {
@@ -20,13 +21,16 @@ export const addBid = async (req, res) => {
         const products = await readJsonFile(productsJsonPath);
         const productIndex = products.findIndex(el => Number(req.params.id) === el.id);
         if (productIndex !== -1) {
-            const product = products[productIndex];
-            if (product.price >= bid) return res.status(400).send({"error": "Your bid cannot be lower than items current price"});
-            if (!product.bids) product.bids = [];
-            product.price = bid;
-            product.bids.push({...req.body, username: req.user.username, id: product.bids.length});
+            if (products[productIndex].price >= bid)
+                return res.status(400).send({"error": "Your bid cannot be lower than items current price"});
+            if (differenceInHours(Date.now(), parse(product.endTime, "dd-MM-yyyy", new Date())) > 0)
+                return res.status(400).send({"error": "This auction has been closed. To bids can be placed now"})
+            if (!products[productIndex].bids) products[productIndex].bids = [];
+            products[productIndex].price = bid;
+            products[productIndex].bids.push({...req.body, username: req.user.username, id: products[productIndex].bids.length});
+            console.log(products)
             await writeJsonFile(productsJsonPath, products);
-            res.status(201).send(product);
+            res.status(201).send(products[productIndex]);
         } else {
             res.status(404).send({"error": "product not found"});
         }

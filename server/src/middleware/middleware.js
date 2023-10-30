@@ -4,6 +4,7 @@ import {readJsonFile} from "../utils/file-io.js";
 
 export const isLoggedIn = async (req, res, next) => {
     let {authorization} = req.headers;
+    if (!authorization) return res.status(422).send({"error":"No authorization provided. Request denied"})
     authorization = authorization.split(" ");
     if (authorization.length !== 2) return res.status(422).send({"error": "Invalid token format"})
     let token = authorization[1];
@@ -12,10 +13,10 @@ export const isLoggedIn = async (req, res, next) => {
     try {
         const users = await readJsonFile(usersJsonPath);
         const {username} = jwt.verify(token, secret);
-        console.log(users.find(el => el.username === username))
-        const {password, ...foundUser} = users.find(el => el.username === username)
-        if (!foundUser) return res.status(401).send({"error": "Invalid user token"})
-        req.user = foundUser;
+        const foundUser = users.find(el => el.username === username);
+        if (!foundUser) return res.status(401).send({"error": "User could not be found"})
+        const {password, ...data} = foundUser
+        req.user = data;
         next();
     } catch (err) {
         return res.status(500).send({"error": err.message})

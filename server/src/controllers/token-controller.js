@@ -18,7 +18,8 @@ export const handleLogin = async (req, res) => {
                     "email": foundUser.email,
                     "admin": foundUser.admin
                 }, secret)
-                res.status(201).send({"token": token, "user": foundUser})
+                const {password, ...data} = foundUser;
+                res.status(201).send({"token": token, "user": data})
             } else return res.status(401).send({"error": "Invalid password. Unauthenticated"});
         })
     } catch (err) {
