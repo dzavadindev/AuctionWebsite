@@ -6,6 +6,6 @@ Place the credentials for at least two users in the table below. There should be
 | Username | Password | Account type |
 |----------|----------|--------------|
 | `admin`  | 12345    | admin        |
-| `bobby`  | 54321    | default      |
+| `user`  | 54321    | default      |
 
 

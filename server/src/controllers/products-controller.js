@@ -44,7 +44,7 @@ export const updateProduct = async (req, res) => {
 
     const startDateUnformatted = Date.now();
     const endDateUnformatted = parse(endDate, "dd-MM-yyyy", new Date());
-    if (price < 0 || year < 0 || differenceInSeconds(startDateUnformatted, endDateUnformatted) <= 0) return res.status(422).send({"error": "Invalid payload"});
+    if (price < 0 || year < 0 || differenceInSeconds(endDateUnformatted, startDateUnformatted) <= 0) return res.status(422).send({"error": "Invalid payload"});
 
     req.body.startDate = format(startDateUnformatted, "dd-MM-yyyy");
 
@@ -69,16 +69,17 @@ export const addProduct = async (req, res) => {
 
     const startDateUnformatted = Date.now();
     const endDateUnformatted = parse(endDate, "dd-MM-yyyy", new Date());
-    if (price < 0 || year < 0 || differenceInHours(startDateUnformatted, endDateUnformatted) <= 0) return res.status(422).send({"error": "Invalid payload, not processable state"});
+    if (price < 0 || year < 0) return res.status(422).send({"error": "Invalid payload, negative year or price value"});
+    if (differenceInSeconds(endDateUnformatted, startDateUnformatted) <= 0) return res.status(422).send({"error": "Invalid payload, end date earlier than start date"});
 
     req.body.startDate = format(startDateUnformatted, "dd-MM-yyyy");
 
     try {
-        const products = await readJsonFile(productsJsonPath, []);
+        const products = await readJsonFile(productsJsonPath );
         const newProduct = {...req.body, id: products.length};
         products.push(newProduct);
-        await writeJsonFile(productsJsonPath, products);
-        res.status(201).send(products);
+        await writeJsonFile(productsJsonPath, newProduct);
+        res.status(201).send(newProduct);
     } catch (err) {
         res.status(500).send({"error": err.message});
     }

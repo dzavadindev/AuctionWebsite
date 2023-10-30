@@ -10,7 +10,7 @@
     export let params;
     let item = {};
     let showPopup = false, bidSubmissionFailed = false;
-    let bidValue, popup, auctionEnded;
+    let bidValue, popup, auctionEnded, buyer;
 
     onMount(async () => {
         document.addEventListener('click', (event) => {
@@ -27,6 +27,7 @@
         });
         item = await response.json();
         auctionEnded = differenceInSeconds(parse(item.endDate, "dd-MM-yyyy", new Date()), Date.now()) <= 0;
+        if (auctionEnded) buyer = item.bids[item.bids.length - 1].username;
     });
 
     const bidTen = async () => {
@@ -86,7 +87,7 @@
             </div>
             {#if auctionEnded}
                 <div class="item-sold">
-                    Item sold for {item.price} to <!--{item.buyer}!--> Buyer
+                    Item sold for {item.price} to {buyer}
                 </div>
             {:else}
                 <div class="buttons-container">

@@ -2,13 +2,15 @@
   {
     "username": "admin",
     "email": "admin@gmail.com",
-    "password": "$2b$15$7X.J.Yj/ueytI6hNzOQv2Ohnu5UTy82BASnmpLDSd6rXaOrIl6sLG",
-    "admin": true
+    "password": "$2b$15$H0tNTm72SkqfEjpUQP3uTuw4ernOku7WeVP1ZZFrU6ipheIVVHJ0q",
+    "admin": true,
+    "wonAuctions": []
   },
   {
-    "username": "bobby",
-    "email": "bobby@gmail.com",
-    "password": "$2b$15$QjiSrBe7IxyrI7aMou1swekOTIAgCiNa2TOjwJkrKuxP7iLKbFdHa",
-    "admin": false
+    "username": "user",
+    "email": "user@gmail.com",
+    "password": "$2b$15$Zq6yrlWgR.JktvEwFMAq5.ShWyYx0TRTL12mx5XQ1hMlQphdNrwtS",
+    "admin": false,
+    "wonAuctions": []
   }
 ]
