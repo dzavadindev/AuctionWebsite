@@ -6,6 +6,7 @@
     import Details from "./pages/Details.svelte";
     import Register from "./pages/Register.svelte";
     import Header from "./components/Header.svelte";
+    import UserDetails from "./pages/UserDetails.svelte";
 
     let page, params, currentRoute;
 
@@ -30,6 +31,10 @@
     router('/register', (ctx) => {
         page = Register;
         currentRoute = "Register";
+    });
+    router('/account/:username', (ctx) => {
+        page = UserDetails;
+        currentRoute = "My Account";
     });
     router('/*', defaultHandler)
 

@@ -25,10 +25,11 @@ export const readJsonFile = (filePath) => {
 export const writeJsonFile = (filePath, data) => {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, 'utf8', (readErr, json) => {
-            if (readErr && readErr.code !== 'ENOENT') return reject(readErr);
+            if (readErr && readErr.code !== 'ENOENT')
+                return reject(readErr);
 
             let currentData = [];
-            if (json && json.trim()) {
+            if (json && json.trim()) { // check for a non-empty file
                 try {
                     currentData = JSON.parse(json);
                     if (!Array.isArray(currentData)) {
@@ -39,11 +40,15 @@ export const writeJsonFile = (filePath, data) => {
                 }
             }
 
-            currentData.push(data);
+            currentData = data;
+            if (!Array.isArray(currentData))
+                return reject(new Error("The input into the file must be an array. Unacceptable state"));
+
 
             const jsonData = JSON.stringify(currentData, null, 2);
             fs.writeFile(filePath, jsonData, 'utf8', (writeErr) => {
-                if (writeErr) return reject(writeErr);
+                if (writeErr)
+                    return reject(writeErr);
                 resolve();
             });
         });

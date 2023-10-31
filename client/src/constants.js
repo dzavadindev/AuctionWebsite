@@ -1,0 +1,5 @@
+export const primaryColor = "#F8F0E5"
+export const secondaryColor = "#EADBC8"
+export const focusColor = "#DAC0A3"
+export const actionColor = "#0F2C59"
+export const contrastColor = "#FF9130"

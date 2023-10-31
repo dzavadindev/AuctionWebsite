@@ -4,11 +4,99 @@
     "name": "New Painting",
     "author": "Joe Doe",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": 200,
+    "price": 100,
+    "country": "Netherlands",
+    "year": 2023,
+    "endDate": "30-10-2023",
+    "startDate": "29-10-2023",
+    "id": 0,
+    "bids": [
+      {
+        "bid": 400,
+        "username": "john",
+        "id": 0
+      }
+    ]
+  },
+  {
+    "image": "/image",
+    "name": "New Painting",
+    "author": "Joe Doe",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "price": 400,
+    "country": "Netherlands",
+    "year": 2023,
+    "endDate": "29-10-2023",
+    "startDate": "25-10-2023",
+    "id": 1,
+    "bids": [
+      {
+        "bid": 300,
+        "username": "bob",
+        "id": 0
+      },
+      {
+        "bid": 350,
+        "username": "sam",
+        "id": 2
+      },
+      {
+        "bid": 400,
+        "username": "john",
+        "id": 3
+      }
+    ]
+  },
+  {
+    "image": "/image",
+    "name": "New Painting",
+    "author": "Joe Doe",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "price": "100",
     "country": "Netherlands",
     "year": "2023",
     "endDate": "29-10-2024",
-    "startDate": "30-10-2023",
-    "id": 0
+    "startDate": "31-10-2023",
+    "id": 2
+  },
+  {
+    "image": "/image",
+    "name": "New Painting",
+    "author": "Joe Doe",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "price": "100",
+    "country": "Netherlands",
+    "year": "2023",
+    "endDate": "29-10-2024",
+    "startDate": "31-10-2023",
+    "id": 3,
+    "bids": [
+      {
+        "bid": 400,
+        "username": "john",
+        "id": 0
+      },
+      {
+        "bid": 500,
+        "username": "zack",
+        "id": 1
+      },{
+        "bid": 600,
+        "username": "john",
+        "id": 2
+      }
+    ]
+  },
+  {
+    "image": "/image",
+    "name": "New Painting",
+    "author": "Joe Doe",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "price": "100",
+    "country": "Netherlands",
+    "year": "2023",
+    "endDate": "29-10-2024",
+    "startDate": "31-10-2023",
+    "id": 4
   }
 ]

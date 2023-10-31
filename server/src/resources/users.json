@@ -10,5 +10,11 @@
     "email": "user@gmail.com",
     "password": "$2b$15$Zq6yrlWgR.JktvEwFMAq5.ShWyYx0TRTL12mx5XQ1hMlQphdNrwtS",
     "admin": false
+  },
+  {
+    "username": "john",
+    "email": "john@gmail.com",
+    "password": "$2b$15$ry6V2UAH4FwWUwU31CaP5eEM/Ni09d1Cacs7zwcYCWnyIGwJuj7FO",
+    "admin": false
   }
 ]

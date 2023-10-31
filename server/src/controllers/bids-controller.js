@@ -19,25 +19,24 @@ export const addBid = async (req, res) => {
 
     try {
         const products = await readJsonFile(productsJsonPath);
-        const productIndex = products.findIndex(el => Number(req.params.id) === el.id);
-        if (productIndex !== -1) {
-            if (products[productIndex].price >= bid)
-                return res.status(400).send({"error": "Your bid cannot be lower than items current price"});
-            if (differenceInHours(Date.now(), parse(product.endTime, "dd-MM-yyyy", new Date())) > 0)
-                return res.status(400).send({"error": "This auction has been closed. To bids can be placed now"})
-            if (!products[productIndex].bids) products[productIndex].bids = [];
-            products[productIndex].price = bid;
-            products[productIndex].bids.push({...req.body, username: req.user.username, id: products[productIndex].bids.length});
-            console.log(products)
-            await writeJsonFile(productsJsonPath, products);
-            res.status(201).send(products[productIndex]);
-        } else {
-            res.status(404).send({"error": "product not found"});
-        }
+        const product = products.find(el => Number(req.params.id) === el.id);
+        if (!product)
+            return res.status(404).send({"error": "product not found"});
+        if (product.price >= bid)
+            return res.status(400).send({"error": "Your bid cannot be lower than items current price"});
+        if (differenceInHours(Date.now(), parse(product.endTime, "dd-MM-yyyy", new Date())) > 0)
+            return res.status(400).send({"error": "This auction has been closed. No bids can be placed now"})
+        let bidId = product.bids ? product.bids.length + 1 : 0;
+        if (!product.bids) product.bids = [];
+        product.price = bid;
+        product.bids.push({bid: bid, username: req.user.username, id: bidId});
+        console.log(products)
+        await writeJsonFile(productsJsonPath, products);
+        res.status(201).send(products);
     } catch (err) {
         res.status(500).send({"error": err.message});
     }
-};
+}
 
 export const removeBid = async (req, res) => {
     const {id, bidId} = req.params;

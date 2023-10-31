@@ -154,7 +154,7 @@
         align-items: center;
         justify-content: space-evenly;
         flex-direction: column;
-        background-color: #375ab4;
+        background-color: #0065ce;
     }
 
     .buttons-container {
@@ -195,7 +195,7 @@
         overflow-y: hidden;
         display: flex;
         flex-direction: column;
-        background-color: magenta;
+        background-color: #00489b;
     }
 
     .bids-scroll-box {
@@ -222,5 +222,4 @@
         width: 100%;
         height: 100%;
     }
-
 </style>

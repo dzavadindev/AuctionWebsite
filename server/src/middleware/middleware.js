@@ -14,12 +14,12 @@ export const isLoggedIn = async (req, res, next) => {
         const users = await readJsonFile(usersJsonPath);
         const {username} = jwt.verify(token, secret);
         const foundUser = users.find(el => el.username === username);
-        if (!foundUser) return res.status(401).send({"error": "User could not be found"})
+        if (!foundUser) return res.status(401).send({"error": "Middleware error. User could not be found"})
         const {password, ...data} = foundUser
         req.user = data;
         next();
     } catch (err) {
-        return res.status(500).send({"error": err.message})
+        return res.status(500).send({"error": "Middleware error. " + err.message})
     }
 }
 

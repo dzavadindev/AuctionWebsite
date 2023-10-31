@@ -20,15 +20,15 @@
     }
 
     button.login-button {
-        background-color: #8616ab;
+        background-color: #116ecb;
     }
 
     button.register-button {
-        background-color: #680488;
+        background-color: #043d88;
     }
 
-    button.add-product-button {
-        background-color: #739302;
+    button.log-out-button {
+        background-color: red;
     }
 
     .button {

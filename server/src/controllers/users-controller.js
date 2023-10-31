@@ -2,6 +2,7 @@ import bcrypt from "bcrypt"
 import {usersJsonPath, saltRounds, secret, productsJsonPath} from "../constants.js";
 import {readJsonFile, writeJsonFile} from "../utils/file-io.js";
 import jwt from "jsonwebtoken";
+import {differenceInHours, parse} from "date-fns";
 
 export const getUsers = async (req, res) => {
     try {
@@ -22,16 +23,21 @@ export const getUser = async (req, res) => {
     }
 };
 
-// export const getUserWonAuctions = async (res, req) => {
-//     const {username} = req.params;
-//     if (username !== req.user.username) return res.status(403).send({"error": "can't access another clients won auctions"})
-//     try {
-//         const products = await readJsonFile(productsJsonPath);
-//         const participatedAuctions = products.filter(el => el.bids.includes())
-//     } catch (err) {
-//         res.status(500).send({"error": err.message})
-//     }
-// }
+export const getUserWonAuctions = async (req, res) => {
+    const {username} = req.params;
+    if (username !== req.user.username) return res.status(403).send({"error": "can't access another clients won auctions"})
+    try {
+        const products = await readJsonFile(productsJsonPath);
+        const participatedAuctions = products.filter(el => Array.isArray(el.bids) && el.bids.some(bid => bid.username === username));
+        const wonAuctions = participatedAuctions.filter(el =>
+            el.bids[el.bids.length - 1].username === username
+            && differenceInHours(Date.now(), parse(el.endDate, "dd-MM-yyyy", new Date())) >= 0
+        )
+        res.status(200).send(wonAuctions)
+    } catch (err) {
+        res.status(500).send({"error": err.message})
+    }
+}
 
 export const deleteUser = async (req, res) => {
     const {username, email} = req.body;
@@ -102,7 +108,8 @@ export const addUser = async (req, res) => {
         await writeJsonFile(usersJsonPath, users);
 
         const token = jwt.sign(newUser, secret)
-        res.status(201).json({"token": token, "user": newUser})
+        const {password, ...data} = newUser;
+        res.status(201).json({"token": token, "user": data})
     } catch (err) {
         res.status(500).send({"error": err.message});
     }

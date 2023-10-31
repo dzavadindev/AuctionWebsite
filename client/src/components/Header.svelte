@@ -13,7 +13,7 @@
         {#if !$token}
             <Button className="login-button" text="Login" onClick={()=> page("/login")}/>
         {:else }
-            <span class="email">{$user.email}</span>
+            <a href={`/account/${$user.username}`} class="email">{$user.email}</a>
         {/if}
     </div>
 </nav>
@@ -25,7 +25,7 @@
         align-items: center;
         padding: 0.5em 1em;
         margin-bottom: 1em;
-        background-color: #7b52e0;
+        background-color: #3b57be;
     }
 
     .email {

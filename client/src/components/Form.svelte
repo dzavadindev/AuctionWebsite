@@ -58,17 +58,17 @@
     }
 
    section.filter-form {
-       max-width: 20em ;
+       max-width: none;
+       padding: 0;
        display: inline;
-       padding: 1rem;
    }
 
     section.login-form {
-        background-color: #7661ff;
+        background-color: #1a48a8;
     }
 
     section.register-form {
-        background-color: #8b43b6;
+        background-color: #287dfa;
     }
 
 </style>

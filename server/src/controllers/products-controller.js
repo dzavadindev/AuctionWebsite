@@ -78,7 +78,7 @@ export const addProduct = async (req, res) => {
         const products = await readJsonFile(productsJsonPath );
         const newProduct = {...req.body, id: products.length};
         products.push(newProduct);
-        await writeJsonFile(productsJsonPath, newProduct);
+        await writeJsonFile(productsJsonPath, products);
         res.status(201).send(newProduct);
     } catch (err) {
         res.status(500).send({"error": err.message});

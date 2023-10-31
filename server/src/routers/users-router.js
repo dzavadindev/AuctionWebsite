@@ -6,7 +6,7 @@ const usersRouter = express.Router();
 
 usersRouter.get('/', isLoggedIn, isAdmin, getUsers);
 usersRouter.get('/:username', getUser);
-usersRouter.get('/:username', isLoggedIn, getUserWonAuctions);
+usersRouter.get('/:username/bids', isLoggedIn, getUserWonAuctions);
 usersRouter.delete('/:username', isLoggedIn, deleteUser);
 usersRouter.put('/:username', updateUser);
 usersRouter.post('/', addUser);

@@ -82,7 +82,7 @@
         display: flex;
         flex-direction: column;
         padding: 0.5rem;
-        background-color: #2277f6;
+        background-color: #2f53e1;
         grid-row: 1 / span 2;
     }
 
