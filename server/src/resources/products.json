@@ -1,14 +1,14 @@
 [
   {
-    "image": "/image",
-    "name": "New Painting",
-    "author": "Joe Doe",
+    "image": "/item-images/liberty-leading-the-people.jpg",
+    "name": "Liberty leading the People",
+    "author": "Delacroix",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": 100,
-    "country": "Netherlands",
-    "year": 2023,
-    "endDate": "30-10-2023",
-    "startDate": "29-10-2023",
+    "price": 400,
+    "country": "France",
+    "year": 1830,
+    "endDate": "16-11-2023",
+    "startDate": "31-10-2023",
     "id": 0,
     "bids": [
       {
@@ -19,15 +19,15 @@
     ]
   },
   {
-    "image": "/image",
-    "name": "New Painting",
-    "author": "Joe Doe",
+    "image": "/item-images/starry-night.jpg",
+    "name": "Starry Night",
+    "author": "Vincent van Gogh",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": 400,
+    "price": 300,
     "country": "Netherlands",
-    "year": 2023,
-    "endDate": "29-10-2023",
-    "startDate": "25-10-2023",
+    "year": 1889,
+    "endDate": "29-11-2023",
+    "startDate": "31-10-2023",
     "id": 1,
     "bids": [
       {
@@ -48,55 +48,15 @@
     ]
   },
   {
-    "image": "/image",
-    "name": "New Painting",
-    "author": "Joe Doe",
+    "image": "/item-images/the-great-wave-of-kanagawa.jpg",
+    "name": "The Great Wave of Kanagawa",
+    "author": "Hokusai",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": "100",
-    "country": "Netherlands",
-    "year": "2023",
-    "endDate": "29-10-2024",
+    "price": 400,
+    "country": "Japan",
+    "year": 1831,
+    "endDate": "21-11-2024",
     "startDate": "31-10-2023",
     "id": 2
-  },
-  {
-    "image": "/image",
-    "name": "New Painting",
-    "author": "Joe Doe",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": "100",
-    "country": "Netherlands",
-    "year": "2023",
-    "endDate": "29-10-2024",
-    "startDate": "31-10-2023",
-    "id": 3,
-    "bids": [
-      {
-        "bid": 400,
-        "username": "john",
-        "id": 0
-      },
-      {
-        "bid": 500,
-        "username": "zack",
-        "id": 1
-      },{
-        "bid": 600,
-        "username": "john",
-        "id": 2
-      }
-    ]
-  },
-  {
-    "image": "/image",
-    "name": "New Painting",
-    "author": "Joe Doe",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": "100",
-    "country": "Netherlands",
-    "year": "2023",
-    "endDate": "29-10-2024",
-    "startDate": "31-10-2023",
-    "id": 4
   }
 ]

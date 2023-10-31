@@ -4,44 +4,40 @@
     import InputField from "../components/InputField.svelte";
     import Form from "../components/Form.svelte";
 
-    let items = [];
+    let itemsPromise;
 
-    onMount(async () => {
-        const response = await fetch("http://localhost:3000/products", {
+    onMount(() => {
+        itemsPromise = fetchData("http://localhost:3000/products");
+    });
+
+    const fetchData = async (url) => {
+        const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
         });
-        items = await response.json();
-        items = items.map(item => ({...item, visible: true}));
-    });
+        const items = await response.json();
+        return items.map(item => ({...item, visible: true}));
+    }
 
-    const search = (event) => {
+    const search = async (event) => {
         let searchTerm = event.target.value.toLowerCase();
-        items = items.map(item => {
+        const items = await itemsPromise;
+        itemsPromise = Promise.resolve(items.map(item => {
             let matcher = item.name.toLowerCase() + item.author.toLowerCase();
             return {...item, visible: matcher.includes(searchTerm)};
-        });
+        }));
     }
 
-    const filter = (event) => {
-        let {country} = event.detail
-
-        let yearMin = event.detail.yearMin ? event.detail.yearMin : Number.MIN_VALUE;
-        let yearMax = event.detail.yearMax ? event.detail.yearMax : Number.MAX_VALUE;
-        let priceMin = event.detail.priceMin ? event.detail.priceMin : Number.MIN_VALUE;
-        let priceMax = event.detail.priceMax ? event.detail.priceMax : Number.MAX_VALUE;
-
-        items = items.map(item => {
-            let yearFilter = yearMin <= item.year && yearMax >= item.year;
-            let priceFilter = priceMin <= item.price && priceMax >= item.price;
-            let countryFilter = item.country.includes(country);
-
-            return {...item, visible: yearFilter && priceFilter && countryFilter};
-        });
+    const filter = async (event) => {
+        let {country, yearMin, yearMax, priceMin, priceMax} = event.detail
+        let url = "http://localhost:3000/products?";
+        if (country) url += `&country=${country}`
+        if (yearMin || yearMax) url += `&year=${yearMin}-${yearMax}`
+        if (priceMin || priceMax) url += `&price=${priceMin}-${priceMax}`
+        itemsPromise = fetchData(url);
     }
-
 </script>
 
 <section class="main-container">
@@ -64,9 +60,15 @@
                placeholder="Search">
     </div>
     <div class="items-container">
-        {#each items as item}
-            <Item {...item}/>
-        {/each}
+        {#await itemsPromise}
+            <p>Loading...</p>
+        {:then items}
+            {#each items as item}
+                <Item {...item}/>
+            {/each}
+        {:catch error}
+            <p>Error loading items: {error.message}</p>
+        {/await}
     </div>
 </section>
 

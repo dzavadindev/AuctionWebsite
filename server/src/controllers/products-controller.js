@@ -2,9 +2,27 @@ import {productsJsonPath} from "../constants.js";
 import {differenceInSeconds, format, parse} from "date-fns";
 import {readJsonFile, writeJsonFile} from '../utils/file-io.js';
 
+
 export const getProducts = async (req, res) => {
+    const {year, country, price} = req.query;
     try {
-        const products = await readJsonFile(productsJsonPath);
+        console.log(year, country, price)
+        let products = await readJsonFile(productsJsonPath);
+
+        if (year) {
+            const [yearFrom, yearTo] = year.split("-").map(Number);
+            products = products.map(el => el.year >= yearFrom && el.year <= yearTo);
+        }
+        if (price) {
+            const [priceFrom, priceTo] = price.split("-").map(Number);
+            products = products.map(el => el.price >= priceFrom && el.price <= priceTo);
+        }
+        if (country) {
+            products = products.map(el => el.country.toLowerCase() === country.toLowerCase());
+        }
+
+        console.log(products)
+
         res.status(200).send(products);
     } catch (err) {
         res.status(500).send({"error": err.message});
@@ -75,7 +93,7 @@ export const addProduct = async (req, res) => {
     req.body.startDate = format(startDateUnformatted, "dd-MM-yyyy");
 
     try {
-        const products = await readJsonFile(productsJsonPath );
+        const products = await readJsonFile(productsJsonPath);
         const newProduct = {...req.body, id: products.length};
         products.push(newProduct);
         await writeJsonFile(productsJsonPath, products);
