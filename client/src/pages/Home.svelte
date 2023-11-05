@@ -1,14 +1,12 @@
 <script>
     import Item from "../components/Item.svelte";
-    import {onMount} from 'svelte';
     import InputField from "../components/InputField.svelte";
     import Form from "../components/Form.svelte";
+    import {onMount} from "svelte";
 
-    let itemsPromise;
-
-    onMount(() => {
-        itemsPromise = fetchData("http://localhost:3000/products");
-    });
+    onMount(async () => {
+        itemsPromise = fetchData("http://localhost:3000/products")
+    })
 
     const fetchData = async (url) => {
         const response = await fetch(url, {
@@ -17,27 +15,34 @@
                 "Content-Type": "application/json"
             }
         });
-        const items = await response.json();
-        return items.map(item => ({...item, visible: true}));
+        return response.json();
     }
 
     const search = async (event) => {
         let searchTerm = event.target.value.toLowerCase();
-        const items = await itemsPromise;
-        itemsPromise = Promise.resolve(items.map(item => {
-            let matcher = item.name.toLowerCase() + item.author.toLowerCase();
-            return {...item, visible: matcher.includes(searchTerm)};
-        }));
+        let url = `http://localhost:3000/products?searchQuery=${searchTerm}`;
+        itemsPromise = await fetchData(url)
+        console.log(itemsPromise)
     }
 
     const filter = async (event) => {
         let {country, yearMin, yearMax, priceMin, priceMax} = event.detail
         let url = "http://localhost:3000/products?";
         if (country) url += `&country=${country}`
-        if (yearMin || yearMax) url += `&year=${yearMin}-${yearMax}`
-        if (priceMin || priceMax) url += `&price=${priceMin}-${priceMax}`
+        if (yearMin || yearMax) {
+            if (yearMax && yearMin) url += `&year=${yearMin}-${yearMax}`
+            if (!yearMax && yearMin) url += `&year=${yearMin}-${Number.MAX_SAFE_INTEGER}`
+            if (yearMax && !yearMin) url += `&year=${Number.MAX_SAFE_INTEGER}-${yearMax}`
+        }
+        if (priceMin || priceMax) {
+            if (priceMax && priceMin) url += `&price=${priceMin}-${priceMax}`
+            if (!priceMax && priceMin) url += `&price=${priceMin}-${Number.MAX_SAFE_INTEGER}`
+            if (priceMax && !priceMin) url += `&price=${Number.MAX_SAFE_INTEGER}-${priceMax}`
+        }
         itemsPromise = fetchData(url);
     }
+
+    let itemsPromise = fetchData("http://localhost:3000/products");
 </script>
 
 <section class="main-container">

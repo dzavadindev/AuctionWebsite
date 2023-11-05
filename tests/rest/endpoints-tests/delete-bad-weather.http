@@ -1,0 +1,118 @@
+###
+### BID
+###
+
+
+### Delete bid without access rights
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids/0
+Content-Type: application/json
+
+> {%
+    client.test("Bid cannot be deleted by an unauthenticated client", () => {
+        client.assert(response.status === 401, "Deleting a bid with no access rights doesn't return a Not Authorized")
+    })
+
+%}
+
+
+### Delete bid with insuficcient access rights
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids/0
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.test("Bid cannot be deleted if it isn't admin or the account owner", () => {
+        client.assert(response.status === 403, "Deleting a bid with insufficient access rights doesn't return a Forbidden")
+    })
+%}
+
+
+### Delete a non-existant bid
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}/-100
+Content-Type: application/json
+
+> {%
+    client.test("Non-existent bid cannot be deleted", () => {
+        client.assert(response.status === 404, "Deleting an non-existing product doesn't return a Not Found")
+    })
+%}
+
+
+###
+### USER
+###
+
+
+### Delete user without access rights
+DELETE {{protocol}}{{host}}:{{port}}/users/{{updatedUserUsername}}
+Content-Type: application/json
+
+> {%
+    client.test("User cannot be deleted by an unauthenticated client", () => {
+        client.assert(response.status === 401, "Deleting a bid with no access rights doesn't return a Not Authorized")
+    })
+%}
+
+
+### Delete user with insuficcent access rights
+DELETE {{protocol}}{{host}}:{{port}}/users/{{updatedUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.test("User cannot be deleted by a non-admin client", () => {
+        client.assert(response.status === 403, "Deleting a bid with insufficient access rights doesn't return a Forbidden")
+    })
+%}
+
+
+### Delete a non-existant user
+DELETE {{protocol}}{{host}}:{{port}}/users/opGaPo3CYx
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Non-existent user cannot be deleted", () => {
+        client.assert(response.status === 404, "Deleting an non-existing user doesn't return a Not Found")
+    })
+%}
+
+
+###
+### PRODUCT
+###
+
+
+### Delete product without access rights
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+
+> {%
+    client.test("Product cannot be deleted by an unauthenticated client", () => {
+        client.assert(response.status === 401, "A non-authenticated user trying to delete product doesn't throw Unauthorized")
+    })
+%}
+
+
+### Delete product with insuficcient access rights
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.test("Product cannot be deleted by a non-admin client", () => {
+        client.assert(response.status === 403, "A non-authenticated user trying to delete product doesn't throw Forbidden")
+    })
+%}
+
+
+### Delete a non-existant product
+DELETE {{protocol}}{{host}}:{{port}}/products/-100
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Non-existent product deletion responds with a 404", () => {
+        client.assert(response.status === 404, "Deleting an non-existing product doesn't return a Not Found")
+    })
+%}

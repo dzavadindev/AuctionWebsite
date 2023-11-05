@@ -1,0 +1,52 @@
+###
+### GOOD Weather
+###
+
+### Add a bid to a product
+POST {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "bid": 200
+}
+
+> {%
+    client.test("Placing a bid to a product", () => {
+        client.assert(response.status === 201, "Server responded with a non-201 status code");
+    })
+%}
+
+###
+### BAD Weather
+###
+
+### Try add a bid that is lower than current price to the product
+POST {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "bid": 1
+}
+
+> {%
+    client.test("Can't place a bid that is lower than the current price", () => {
+        client.assert(response.status === 400, "A user was able to bid amount lower than the current price of the product");
+    })
+%}
+
+### Try add a bid that to a non-existant product
+POST {{protocol}}{{host}}:{{port}}/products/-100/bids
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "bid": 300
+}
+
+> {%
+    client.test("Can't place a bid to a non-existent product", () => {
+        client.assert(response.status === 404, "The request to a non-existent product didn't respond with an error code");
+    })
+%}

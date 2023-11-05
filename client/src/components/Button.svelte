@@ -28,6 +28,7 @@
     }
 
     button.log-out-button {
+        font-size: 1.5em;
         background-color: red;
     }
 

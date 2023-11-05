@@ -1,0 +1,64 @@
+###
+### GOOD Weather
+###
+
+
+### Update a specific user
+PUT {{protocol}}{{host}}:{{port}}/users/{{createdUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{createdUserToken}}
+
+{
+  "username": "sam",
+  "email": "sam@gmail.com",
+  "password": "12345"
+}
+
+> {%
+    client.global.set("updatedUserUsername", response.body.user.username);
+    client.global.set("updatedUserToken", response.body.token);
+
+    client.test("Updating user information and re-making token", () => {
+        client.assert(response.status === 200, "Could not successfully update user")
+        client.assert(response.body.token, "No token has been returned")
+    })
+%}
+
+
+###
+### BAD Weather
+###
+
+
+### Try updating a user with a missing property in the payload (email missing)
+PUT {{protocol}}{{host}}:{{port}}/users/{{updatedUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{updatedUserToken}}
+
+{
+  "username": "sam",
+  "password": "12345"
+}
+
+> {%
+    client.test("Can't update a user with missing properties in the payload", () => {
+        client.assert(response.status === 422, "An incomplete PUT request didn't resolve in a 422 Invalid Payload")
+    })
+%}
+
+### Try updating a user with an invalid email in the payload
+PUT {{protocol}}{{host}}:{{port}}/users/{{updatedUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{updatedUserToken}}
+
+{
+  "username": "sam",
+  "email": "thisISN000tAnemail",
+  "password": "12345"
+}
+
+> {%
+    client.test("Can't update a user with an invalid email in the payload", () => {
+        client.assert(response.status === 422, "A request with an invalid email didn't resolve in a 422 Invalid Payload")
+    })
+%}

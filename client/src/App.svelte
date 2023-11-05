@@ -61,4 +61,9 @@
         color: #1cc5ac;
     }
 
+    :global(.fa-spin) {
+        font-size: 4em;
+        color: #0d0d6c;
+    }
+
 </style>

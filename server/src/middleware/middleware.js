@@ -4,9 +4,9 @@ import {readJsonFile} from "../utils/file-io.js";
 
 export const isLoggedIn = async (req, res, next) => {
     let {authorization} = req.headers;
-    if (!authorization) return res.status(422).send({"error":"No authorization provided. Request denied"})
+    if (!authorization) return res.status(401).send({"error":"No authorization provided. Request denied"})
     authorization = authorization.split(" ");
-    if (authorization.length !== 2) return res.status(422).send({"error": "Invalid token format"})
+    if (authorization.length !== 2) return res.status(401).send({"error": "Invalid token format"})
     let token = authorization[1];
     if (!token) return res.status(401).send({"error": "Unauthenticated, missing token"})
 

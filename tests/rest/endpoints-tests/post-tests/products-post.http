@@ -1,0 +1,123 @@
+###
+### GOOD Weather
+###
+
+
+### Create a new product | Here no actual image is being provided, and the end date is far into the future. This way those values must me valid
+POST {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/image",
+  "name": "New Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": "100",
+  "country": "Netherlands",
+  "year": "2023",
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.global.set("productId", response.body.id);
+
+    client.test("Creation of a product", () => {
+        client.assert(response.status === 201, "Server responded with a non-201 status code")
+    })
+%}
+
+
+###
+### BAD Weather
+###
+
+
+### Create a new product without access rights
+POST {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+
+{
+  "image": "/image",
+  "name": "New Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": "100",
+  "country": "Netherlands",
+  "year": "2023",
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't create product without access rights", () => {
+        client.assert(response.status === 401, "An unauthenticated user had created a product")
+    })
+%}
+
+
+### Create a new product without insuficcinet access rights
+POST {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "image": "/image",
+  "name": "New Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": "100",
+  "country": "Netherlands",
+  "year": "2023",
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't create product with insufficient access rights", () => {
+        client.assert(response.status === 403, "An unauthorized user had created a product")
+    })
+%}
+
+
+### Create a new product with a missing product value (price missing)
+POST {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/image",
+  "name": "New Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "country": "Netherlands",
+  "year": "2023",
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't create a new product with a missing product value", () => {
+        client.assert(response.status === 422, "An uncompleted product had been added to the json")
+    })
+%}
+
+
+### Create a new product with invalid end date (the date before current)
+POST {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/image",
+  "name": "New Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": 100,
+  "country": "Netherlands",
+  "year": "2023",
+  "endDate": "01-12-1990"
+}
+
+> {%
+    client.test("Can't create a new product with invalid end date", () => {
+        client.assert(response.status === 422, "A product with invalid date had been added to the json")
+    })
+%}

@@ -3,8 +3,10 @@
     import Form from "../components/Form.svelte";
     import {token, user} from "../store.js"
     import page from "page"
+    import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+    import {FontAwesomeIcon} from "@fortawesome/svelte-fontawesome";
 
-    let submissionFailed = false;
+    let submissionFailed = false, loading = false;
     let errorMessage;
 
     const assert = (condition, message) => {
@@ -17,7 +19,6 @@
     const register = async (event) => {
         const {username, email, password, repeatPassword} = event.detail;
         let validEmail = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/.test(email);
-        submissionFailed = false;
 
         try {
             assert(username && email && password && repeatPassword, "Fields can't be blank")
@@ -28,14 +29,23 @@
             return
         }
 
-        const res = await fetch("http://localhost:3000/users", {
+        loading = true;
+
+        const response = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({username, email, password})
         })
-        const json = await res.json();
+        const json = await response.json();
+
+        if (!response.ok) {
+            submissionFailed = true;
+            errorMessage = json.error;
+            loading = false;
+            return
+        }
 
         token.set(json.token);
         user.set(json.user);
@@ -45,13 +55,19 @@
 
 </script>
 
-<Form header="Register" buttonClass="register-button" buttonText="Register" formClass="register-form"
-      on:submit={register}>
-    <InputField labelText="Username" inputType="text" inputName="username"/>
-    <InputField labelText="Email" inputType="text" inputName="email"/>
-    <InputField labelText="Password" inputType="password" inputName="password"/>
-    <InputField labelText="Repeat Password" inputType="password" inputName="repeatPassword"/>
-    {#if submissionFailed}
-        <span style="color: red">{errorMessage}</span>
-    {/if}
-</Form>
+{#if loading}
+    <section class="loading-wrapper">
+        <FontAwesomeIcon icon={faSpinner} class="fa-spin"/>
+    </section>
+{:else}
+    <Form header="Register" buttonClass="register-button" buttonText="Register" formClass="register-form"
+          on:submit={register}>
+        <InputField labelText="Username" inputType="text" inputName="username"/>
+        <InputField labelText="Email" inputType="text" inputName="email"/>
+        <InputField labelText="Password" inputType="password" inputName="password"/>
+        <InputField labelText="Repeat Password" inputType="password" inputName="repeatPassword"/>
+        {#if submissionFailed}
+            <span style="color: #93b4ff">{errorMessage}</span>
+        {/if}
+    </Form>
+{/if}

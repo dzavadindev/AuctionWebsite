@@ -23,10 +23,10 @@
     "name": "Starry Night",
     "author": "Vincent van Gogh",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": 300,
+    "price": 400,
     "country": "Netherlands",
     "year": 1889,
-    "endDate": "29-11-2023",
+    "endDate": "03-11-2023",
     "startDate": "31-10-2023",
     "id": 1,
     "bids": [
@@ -44,6 +44,11 @@
         "bid": 400,
         "username": "john",
         "id": 3
+      },
+      {
+        "bid": 400,
+        "username": "admin",
+        "id": 4
       }
     ]
   },
@@ -52,11 +57,23 @@
     "name": "The Great Wave of Kanagawa",
     "author": "Hokusai",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "price": 400,
+    "price": 600,
     "country": "Japan",
     "year": 1831,
     "endDate": "21-11-2024",
     "startDate": "31-10-2023",
-    "id": 2
+    "id": 2,
+    "bids": [
+      {
+        "bid": 500,
+        "username": "user",
+        "id": 0
+      },
+      {
+        "bid": 600,
+        "username": "user",
+        "id": 2
+      }
+    ]
   }
 ]

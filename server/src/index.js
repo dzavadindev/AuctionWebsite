@@ -1,8 +1,8 @@
 import express from 'express';
 
 import tokenRouter from './routers/token-router.js';
-import productsRouter from "./routers/products-router.js";
-import usersRouter from "./routers/users-router.js";
+import productRouter from "./routers/product-router.js";
+import userRouter from "./routers/user-router.js";
 import cors from 'cors'
 
 const app = express();
@@ -15,8 +15,8 @@ app.use(express.json());
 const port = 3000;
 
 app.use('/token', tokenRouter);
-app.use('/users', usersRouter);
-app.use('/products', productsRouter);
+app.use('/users', userRouter);
+app.use('/products', productRouter);
 app.use((req, res) => res.status(404).send('Sorry, that resource does not exist!'))
 
 app.listen(port, () => {

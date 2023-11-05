@@ -4,24 +4,22 @@ import {readJsonFile, writeJsonFile} from '../utils/file-io.js';
 
 
 export const getProducts = async (req, res) => {
-    const {year, country, price} = req.query;
+    const {year, country, price, searchQuery} = req.query;
     try {
-        console.log(year, country, price)
         let products = await readJsonFile(productsJsonPath);
 
         if (year) {
             const [yearFrom, yearTo] = year.split("-").map(Number);
-            products = products.map(el => el.year >= yearFrom && el.year <= yearTo);
+            products = products.filter(el => el.year >= yearFrom && el.year <= yearTo);
         }
         if (price) {
             const [priceFrom, priceTo] = price.split("-").map(Number);
-            products = products.map(el => el.price >= priceFrom && el.price <= priceTo);
+            products = products.filter(el => el.price >= priceFrom && el.price <= priceTo);
         }
-        if (country) {
-            products = products.map(el => el.country.toLowerCase() === country.toLowerCase());
-        }
-
-        console.log(products)
+        if (country)
+            products = products.filter(el => el.country.toLowerCase() === country.toLowerCase());
+        if (searchQuery)
+            products = products.filter(el => (el.name.toLowerCase() + el.author.toLowerCase()).includes(searchQuery.toLowerCase()))
 
         res.status(200).send(products);
     } catch (err) {
@@ -58,11 +56,13 @@ export const deleteProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     const {image, name, author, description, price, country, year, endDate} = req.body;
-    if (!image || !name || !author || !description || !price || !country || !year || !endDate) return res.status(422).send({"error": "Invalid payload"});
+    if (!image || !name || !author || !description || !price || !country || !year || !endDate)
+        return res.status(422).send({"error": "Invalid payload"});
 
     const startDateUnformatted = Date.now();
     const endDateUnformatted = parse(endDate, "dd-MM-yyyy", new Date());
-    if (price < 0 || year < 0 || differenceInSeconds(endDateUnformatted, startDateUnformatted) <= 0) return res.status(422).send({"error": "Invalid payload"});
+    if (price < 0 || year < 0 || differenceInSeconds(endDateUnformatted, startDateUnformatted) <= 0)
+        return res.status(422).send({"error": "Invalid payload"});
 
     req.body.startDate = format(startDateUnformatted, "dd-MM-yyyy");
 
@@ -70,11 +70,10 @@ export const updateProduct = async (req, res) => {
         const products = await readJsonFile(productsJsonPath);
         const productIndex = products.findIndex(el => Number(req.params.id) === el.id);
 
-        if (productIndex !== -1) {
-            products[productIndex] = {...req.body, id: products[productIndex].id};
-            await writeJsonFile(productsJsonPath, products);
-            res.status(200).send(products[productIndex]);
-        } else res.status(404).send({"error": "product not found"});
+        if (productIndex !== -1) return res.status(404).send({"error": "product not found"});
+        products[productIndex] = {...req.body, id: products[productIndex].id};
+        await writeJsonFile(productsJsonPath, products);
+        res.status(200).send(products[productIndex]);
 
     } catch (err) {
         res.status(500).send({"error": err.message});

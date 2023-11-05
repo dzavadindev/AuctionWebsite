@@ -1,0 +1,61 @@
+
+###
+### Those two clients are always present, for test purposes.
+### GOOD Weather
+###
+
+### Retrieve a token of an admin client
+POST {{protocol}}{{host}}:{{port}}/token
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "12345"
+}
+
+> {%
+    client.global.set("adminToken", response.body.token);
+
+    client.test("Retrieving a token for admin client", () => {
+        client.assert(response.status === 201, "Server responded with a non-201 status code")
+        client.assert(response.body.token, "No token has been returned")
+    })
+%}
+
+
+### Retrieve a token of an user client
+POST {{protocol}}{{host}}:{{port}}/token
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "54321"
+}
+
+> {%
+    client.global.set("userToken", response.body.token);
+
+    client.test("Retrieving a token for user client", () => {
+        client.assert(response.status === 201, "Server responded with a non-201 status code")
+        client.assert(response.body.token, "No token has been returned")
+    })
+%}
+
+###
+### BAD Weather
+###
+
+### Try tetrieve a token of a non-existant client
+POST {{protocol}}{{host}}:{{port}}/token
+Content-Type: application/json
+
+{
+  "username": "VWKjULbHgx",
+  "password": "208DSf7346GW2"
+}
+
+> {%
+    client.test("Can't retrieve a token for a non-existent client", () => {
+        client.assert(response.status === 401, "Retrieved a token for a non-existent user, impossible state")
+    })
+%}

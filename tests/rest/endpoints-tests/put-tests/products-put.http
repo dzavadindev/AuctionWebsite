@@ -1,0 +1,121 @@
+###
+### GOOD Weather
+###
+
+
+### Update a specific product
+PUT {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/updated-image",
+  "name": "Updated Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": 100,
+  "country": "Denmark",
+  "year": 2020,
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Updating info of a product", () => {
+        client.assert(response.status === 200, "Server responded with a non-200 status code");
+    })
+%}
+
+
+###
+### BAD Weather
+###
+
+
+### Update a new product without access rights
+PUT {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+
+{
+  "image": "/updated-image",
+  "name": "Updated Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": 100,
+  "country": "Denmark",
+  "year": 2020,
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't update product without access rights", () => {
+        client.assert(response.status === 401, "An unauthenticated user had updated a product")
+    })
+%}
+
+
+### Update a new product without insuficcinet access rights
+PUT {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "image": "/updated-image",
+  "name": "Updated Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": 100,
+  "country": "Denmark",
+  "year": 2020,
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't update product with insufficient access rights", () => {
+        client.assert(response.status === 403, "An unauthorized user had updated a product")
+    })
+%}
+
+
+### Update a new product with a missing product value (price missing)
+PUT {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/updated-image",
+  "name": "Updated Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "country": "Denmark",
+  "year": 2020,
+  "endDate": "01-12-2050"
+}
+
+> {%
+    client.test("Can't update a new product with a missing product value", () => {
+        client.assert(response.status === 422, "An uncompleted product had been added to the json")
+    })
+%}
+
+
+### Update a new product with invalid end date (the date before current)
+PUT {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "image": "/updated-image",
+  "name": "Updated Painting",
+  "author": "Joe Doe",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "price": 100,
+  "country": "Denmark",
+  "year": 2020,
+  "endDate": "01-12-1990"
+}
+
+> {%
+    client.test("Can't update a new product with invalid end date", () => {
+        client.assert(response.status === 422, "A product with invalid date had been added to the json")
+    })
+%}

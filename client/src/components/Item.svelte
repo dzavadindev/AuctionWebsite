@@ -2,7 +2,7 @@
     import page from "page";
     import {token} from "../store.js"
 
-    export let image, name, price, id, author, visible;
+    export let image, name, price, id, author;
 
     const navigateToDetails = () => {
         if (!$token) {
@@ -13,8 +13,7 @@
     }
 </script>
 
-<div id={id} on:click={navigateToDetails} on:keydown={navigateToDetails} role="button" tabindex="0" class="item"
-     style="display: {visible ? 'block' : 'none'};">
+<div id={id} on:click={navigateToDetails} on:keydown={navigateToDetails} role="button" tabindex="0" class="item">
     <div class="image-wrapper">
         <img class="image" src={image} alt={"item" + id}>
     </div>

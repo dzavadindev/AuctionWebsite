@@ -1,0 +1,61 @@
+###
+### GOOD Weather
+###
+
+
+### Creation of a user client / Retrieve a token of an user client
+POST {{protocol}}{{host}}:{{port}}/users
+Content-Type: application/json
+
+{
+  "username": "bobby",
+  "email": "bobby@gmail.com",
+  "password": "54321"
+}
+
+> {%
+    client.global.set("createdUserUsername", response.body.user.username);
+    client.global.set("createdUserToken", response.body.token);
+
+    client.test("Retrieving a token for user client", () => {
+        client.assert(response.status === 201, "Server responded with a non-201 status code")
+        client.assert(response.body.token, "No token has been returned")
+    })
+%}
+
+
+###
+### BAD Weather
+###
+
+
+### Try creating a user with a missing property (email missing)
+POST {{protocol}}{{host}}:{{port}}/users
+Content-Type: application/json
+
+{
+  "username": "bobby",
+  "password": "54321"
+}
+
+> {%
+    client.test("Can't create a user with missing properties", () => {
+        client.assert(response.status === 422, "An incomplete POST request didn't resolve in a 422 Invalid Payload")
+    })
+%}
+
+### Try creating a user with an invalid email
+POST {{protocol}}{{host}}:{{port}}/users
+Content-Type: application/json
+
+{
+  "username": "bobby",
+  "email": "thisISN000tAnemail",
+  "password": "54321"
+}
+
+> {%
+    client.test("Can't create a user with an invalid email", () => {
+        client.assert(response.status === 422, "A request with an invalid email didn't resolve in a 422 Invalid Payload")
+    })
+%}

@@ -1,0 +1,48 @@
+### Delete bid sucessfully
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids/0
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Bid deleted successfully", () => {
+        client.assert(response.status === 200, "Could not delete the product")
+    })
+%}
+
+### Delete product sucessfully
+DELETE {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Product deleted successfully", () => {
+        client.assert(response.status === 200, "Could not delete the product")
+    })
+%}
+
+### Delete user sucessfully with admin rights
+DELETE {{protocol}}{{host}}:{{port}}/users/{{createdUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("User deleted successfully", () => {
+        client.assert(response.status === 200, "Could not delete the product")
+    })
+%}
+
+###
+### This is one of those cases. To test those two tests, I need the user object that the first one deletes
+### in the second test. This is probably the most evident one, out of the confusions I have explained in the README
+###
+
+### Delete user sucessfully with that users rights
+DELETE {{protocol}}{{host}}:{{port}}/users/{{updatedUserUsername}}
+Content-Type: application/json
+Authorization: Bearer {{updatedUserToken}}
+
+> {%
+    client.test("User cannot be deleted by a non-admin client", () => {
+        client.assert(response.status === 403, "Deleting a bid with insufficient access rights doesn't return a Forbidden")
+    })
+%}

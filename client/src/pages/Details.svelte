@@ -1,16 +1,33 @@
 <script>
+    import {token, user} from "../store.js";
+    import {onMount} from 'svelte';
+    import {differenceInSeconds, parse} from "date-fns";
+    import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+    import {FontAwesomeIcon} from "@fortawesome/svelte-fontawesome";
     import Bid from "../components/Bid.svelte";
     import Button from "../components/Button.svelte";
     import InputField from "../components/InputField.svelte";
-    import {token} from "../store.js";
-    import {onMount} from 'svelte';
-    import {differenceInSeconds, parse} from "date-fns";
     import Countdown from "../lib/Countdown.svelte";
+    import page from "page";
 
     export let params;
-    let item = {};
     let showPopup = false, bidSubmissionFailed = false;
     let bidValue, popup, auctionEnded, buyer;
+    let itemPromise, price;
+
+    const fetchData = async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        let data = await response.json();
+        price = data.price;
+        auctionEnded = differenceInSeconds(parse(data.endDate, "dd-MM-yyyy", new Date()), Date.now()) <= 0;
+        if (auctionEnded) buyer = data.bids[data.bids.length - 1].username;
+        return data;
+    }
 
     onMount(async () => {
         document.addEventListener('click', (event) => {
@@ -18,48 +35,19 @@
                 showPopup = false;
             }
         });
-
-        const response = await fetch(`http://localhost:3000/products/${params.id}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        item = await response.json();
-        auctionEnded = differenceInSeconds(parse(item.endDate, "dd-MM-yyyy", new Date()), Date.now()) <= 0;
-        if (auctionEnded) buyer = item.bids[item.bids.length - 1].username;
     });
 
-    const bidTen = async () => {
-        const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
-            method: "POST",
+    const deleteProduct = () => {
+        fetch(`http://localhost:3000/products/${params.id}`, {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${$token}`
             },
-            body: JSON.stringify({"bid": 10 + item.price})
         })
-        if (response.ok) {
-            showPopup = false;
-            bidSubmissionFailed = false
-            item = await response.json();
-        }
+        page("/home")
     }
-    const bidHundred = async () => {
-        const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${$token}`
-            },
-            body: JSON.stringify({"bid": 100 + item.price})
-        })
-        if (response.ok) {
-            showPopup = false;
-            bidSubmissionFailed = false
-            item = await response.json();
-        }
-    }
+
     const bidCustom = async (bid) => {
         const response = await fetch(`http://localhost:3000/products/${params.id}/bids`, {
             method: "POST",
@@ -69,17 +57,28 @@
             },
             body: JSON.stringify({"bid": bid})
         })
+
         if (!response.ok) {
             bidSubmissionFailed = true;
         } else {
             showPopup = false;
-            item = await response.json();
+            itemPromise = await response.json();
+            price = itemPromise.price
         }
     }
 
+    itemPromise = fetchData(`http://localhost:3000/products/${params.id}`);
+
+    const bidTen = () => bidCustom(price + 10)
+    const bidHundred = () => bidCustom(price + 100)
+
 </script>
 
-{#if item}
+{#await itemPromise}
+    <section class="loading-wrapper">
+        <FontAwesomeIcon icon={faSpinner} class="fa-spin"/>
+    </section>
+{:then item}
     <section class="item-details">
         <section class="image-and-bidding-container">
             <div class="image-wrapper">
@@ -115,26 +114,29 @@
             <p class="price">
                 Current bid: {item.price}€
             </p>
+            {#if $user.admin && !auctionEnded}
+                <Button className="bid-button" text="Delete Product" onClick={deleteProduct}/>
+            {/if}
         </section>
         <div class="bids-container">
             <h3>Recent bids:</h3>
             <div class="bids-scroll-box">
                 {#if item.bids}
-                    {#each item.bids as bid}
+                    {#each item.bids.reverse() as bid}
                         <Bid username={bid.username} bid={bid.bid}/>
                     {/each}
                 {/if}
             </div>
         </div>
     </section>
-{:else}
-    <section>404 Not Found</section>
-{/if}
+{:catch err}
+    <section style="color: black">404 Not Found <br> {err}</section>
+{/await}
 
 <section class="popup-background" style="display: {showPopup ? 'flex' : 'none'}">
     <div bind:this={popup} class="popup">
         <InputField inputType="number" labelText="Your bid" inputName="bid" bind:inputValue={bidValue}/>
-        <Button text="Bid" className="your-bid-submit-button" onClick={() => bidCustom(bidValue)}/>
+        <Button text="Bid" className="bid-button" onClick={() => bidCustom(bidValue)}/>
         {#if bidSubmissionFailed}
             <span style="color: red">Couldn't place your bid, check if its valid again</span>
         {/if}
@@ -204,7 +206,12 @@
         flex-direction: column;
     }
 
+    .bids-scroll-box:first-child{
+        background-color: gold;
+    }
+
     .popup {
+        color:black;
         display: flex;
         flex-direction: column;
         padding: 20px;

@@ -1,0 +1,144 @@
+###
+### GOOD Weather
+###
+
+###
+### PRODUCT
+###
+
+
+### Fetch a specific product by ID (No auth required)
+GET {{protocol}}{{host}}:{{port}}/products/{{productId}}
+Content-Type: application/json
+
+> {%
+    client.test("Getting specific product", () => {
+        client.assert(response.status === 200, "Could not fetch the product data");
+    })
+%}
+
+
+### Fetch all products (No auth required)
+GET {{protocol}}{{host}}:{{port}}/products
+Content-Type: application/json
+
+> {%
+    client.test("Getting all products", () => {
+        client.assert(response.status === 200, "Could not fetch the list of all product");
+    })
+%}
+
+
+### Fetch all won auctions of a user
+GET {{protocol}}{{host}}:{{port}}/users/user/won
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.test("Retrieving list of all won auctions of a user", () => {
+        client.assert(response.status === 200, "Could not fetch the list of all won auctions of a user");
+    })
+%}
+
+
+###
+### USER
+###
+
+
+### Fetch all users
+GET {{protocol}}{{host}}:{{port}}/users
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Retrieving list of all users", () => {
+        client.assert(response.status === 200, "Could not fetch the list of all users")
+    })
+%}
+
+
+### Fetch a specific user by username
+GET {{protocol}}{{host}}:{{port}}/users/user
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.test("Retrieving a specific user", () => {
+        client.assert(response.status === 200, "Could not fetch the list of all users");
+    })
+%}
+
+
+###
+### BIDS
+###
+
+
+### Fetch all bids of a product
+GET {{protocol}}{{host}}:{{port}}/products/{{productId}}/bids
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Retrieving a specific user data", () => {
+        client.assert(response.status === 200, "Could not fetch the list of all bids based on product");
+    })
+%}
+
+
+###
+### BAD Weather
+###
+
+###
+### PRODUCT
+###
+
+
+### Fetch a non-existant product by ID
+GET {{protocol}}{{host}}:{{port}}/products/-100
+Content-Type: application/json
+
+> {%
+    client.test("Non-existent product return 404 Not Found on fetch", () => {
+        client.assert(response.status === 404, "Fetching a non-existent product data didn't respond with Not Found");
+    })
+%}
+
+
+### A non-existant user can't possibly have authentication, so this check is for 401
+### Fetch all won auctions of a non-existant user
+GET {{protocol}}{{host}}:{{port}}/users/qGNctGadYg/won
+
+> {%
+    client.test("Fetch of bids of a non-existent user returns 404 Not Found", () => {
+        client.assert(response.status === 401, "Fetching won auctions of a non-existent user didn't respond with Unauthorized");
+    })
+%}
+
+
+###
+### USER
+###
+
+
+### Fetch a non-existant user by username
+GET {{protocol}}{{host}}:{{port}}/users/qGNctGadYg
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Non-existent user return 404 Not Found on fetch", () => {
+        client.assert(response.status === 404, "Fetching a non-existent user data didn't respond with Not Found");
+    })
+%}
+
+###
+### BIDS
+###
+
+### Fetch all bids of a non-existant product
+GET {{protocol}}{{host}}:{{port}}/-100/bids
+Authorization: Bearer {{adminToken}}
+
+> {%
+    client.test("Fetch of bids of a non-existent products returns 404 Not Found", () => {
+        client.assert(response.status === 404, "Fetching the bids of a non-existent product didn't respond with Not Found");
+    })
+%}
